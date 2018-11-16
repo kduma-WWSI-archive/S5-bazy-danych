@@ -143,6 +143,9 @@ ELSE
     CREATE TABLE filmy_kraje (
       film_id INT NOT NULL,
       kraj_id INT NOT NULL,
+
+      UNIQUE (film_id, kraj_id),
+
       CONSTRAINT fk_filmy_kraje_film FOREIGN KEY (film_id) REFERENCES filmy (id),
       CONSTRAINT fk_filmy_kraje_kraj FOREIGN KEY (kraj_id) REFERENCES kraje (id),
     );
@@ -161,6 +164,9 @@ ELSE
     CREATE TABLE filmy_rodzaje (
       film_id   INT NOT NULL,
       rodzaj_id INT NOT NULL,
+
+      UNIQUE (film_id, rodzaj_id),
+
       CONSTRAINT fk_filmy_rodzaje_film FOREIGN KEY (film_id) REFERENCES filmy (id),
       CONSTRAINT fk_filmy_rodzaje_rodzaj FOREIGN KEY (rodzaj_id) REFERENCES rodzaje (id),
     );

@@ -1,0 +1,122 @@
+-- --------------------------------------------------
+-- USE Kasety
+-- GO
+PRINT 'Usuwam powi¹zania miêdzy tabelami w BD KASETY :'
+PRINT '-----------------------------------------------'
+-- --------------------------------------------------
+-- ************* Usuwanie powiazañ miêdzy tabelami [FK_WYPO_KLIENCI]
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'FK_WYPO_KLIENCI'))
+	BEGIN	
+		PRINT '   Usuwam powi¹zanie [FK_WYPO_KLIENCI] w bazie danych KASETY'
+		ALTER TABLE WYPO DROP 
+			CONSTRAINT [FK_WYPO_KLIENCI] 
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak powi¹zania [FK_WYPO_KLIENCI] w bazie danych KASETY'
+GO
+PRINT 'Usuwam tabele w BD KASETY :'
+PRINT '-----------------------------------------------'
+-- --------------------------------------------------
+-- ***** Usuwanie tabel z bazy danych Kasety
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli FILRODZ
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'FILRODZ'))
+	BEGIN
+		PRINT '   Usuwam Tabelê FILRODZ z bazy danych KASETY'		
+		DROP table FILRODZ
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli FILRODZ w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli FILKRA
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'FILKRA'))
+	BEGIN
+		DROP table FILKRA
+		PRINT '   Usuwam Tabelê FILKRA z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli FILKRA w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli WYPO
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'WYPO'))
+	BEGIN
+		DROP table WYPO
+		PRINT '   Usuwam Tabelê WYPO z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli WYPO w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli KRAJ
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'KRAJ'))
+	BEGIN
+		DROP table KRAJ
+		PRINT '   Usuwam Tabelê KRAJ z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli KRAJ w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli RODZAJ
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'RODZAJ'))
+	BEGIN
+		DROP table RODZAJ
+		PRINT '   Usuwam Tabelê RODZAJ z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli RODZAJ w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli KLIENCI
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'KLIENCI'))
+	BEGIN
+		DROP table KLIENCI
+		PRINT '   Usuwam Tabelê KLIENCI z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli KLIENCI w bazie danych KASETY'
+GO
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli KASETY
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'KASETY'))
+	BEGIN
+		DROP table KASETY
+		PRINT '   Usuwam Tabelê KASETY z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli KASETY w bazie danych KASETY'
+GO
+
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli FILMY
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'FILMY'))
+	BEGIN
+		DROP table FILMY
+		PRINT '   Usuwam Tabelê FILMY z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli FILMY w bazie danych KASETY'
+GO
+
+-- --------------------------------------------------
+-- ************* Usuwanie tabeli REZYSER
+-- --------------------------------------------------
+IF EXISTS (select * from dbo.sysobjects where id = object_id(N'REZYSER'))
+	BEGIN
+		DROP table REZYSER
+		PRINT '   Usuwam Tabelê REZYSER z bazy danych KASETY'
+	END
+ELSE
+		PRINT '   UWAGA !	- Brak Tabeli REZYSER w bazie danych KASETY'
+GO
