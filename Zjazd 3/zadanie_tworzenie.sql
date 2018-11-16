@@ -10,7 +10,7 @@ ELSE
   BEGIN
     PRINT 'klienci: tworze'
     CREATE TABLE klienci (
-      id       INT PRIMARY KEY NOT NULL,
+      id       INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       nazwisko CHAR(30)        NOT NULL,
       imie     CHAR(15)        NOT NULL,
       wiek     INT             NULL,
@@ -31,7 +31,7 @@ ELSE
   BEGIN
     PRINT 'kraje: tworze'
     CREATE TABLE kraje (
-      id    INT PRIMARY KEY NOT NULL,
+      id    INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       nazwa CHAR(30)        NOT NULL,
     );
   END
@@ -47,7 +47,7 @@ ELSE
   BEGIN
     PRINT 'rodzaje: tworze'
     CREATE TABLE rodzaje (
-      id    INT PRIMARY KEY NOT NULL,
+      id    INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       nazwa CHAR(30)        NOT NULL,
     );
   END
@@ -63,7 +63,7 @@ ELSE
   BEGIN
     PRINT 'rezyser: tworze'
     CREATE TABLE rezyser (
-      id       INT PRIMARY KEY NOT NULL,
+      id       INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       nazwisko CHAR(30)        NOT NULL,
       imie     CHAR(15)        NOT NULL,
     );
@@ -80,7 +80,7 @@ ELSE
   BEGIN
     PRINT 'filmy: tworze'
     CREATE TABLE filmy (
-      id         INT PRIMARY KEY NOT NULL,
+      id         INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       tytul      CHAR(25)        NOT NULL,
       imie       CHAR(15)        NOT NULL,
       rezyser_id INT             NOT NULL,
@@ -102,7 +102,7 @@ ELSE
   BEGIN
     PRINT 'kasety: tworze'
     CREATE TABLE kasety (
-      id      INT PRIMARY KEY NOT NULL,
+      id      INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
       film_id INT             NOT NULL,
       status  CHAR(1)         NOT NULL,
       CONSTRAINT fk_kaseta_film FOREIGN KEY (film_id) REFERENCES filmy (id)
