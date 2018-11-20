@@ -116,3 +116,9 @@ ELSE
     DROP TABLE klienci;
   END
 GO ;
+
+DROP RULE regula_plec;
+GO ;
+
+DROP DEFAULT domyslne_brak_informacji;
+GO ;
