@@ -1,0 +1,328 @@
+--Wstawianie wierszy do bazy danych
+------------------------------------------
+-- Usuwanie zawartosci tabel
+DELETE FROM Filkra
+GO
+SELECT '1 - Usun¹³em Filkra' as operacja
+DELETE FROM Filrodz
+GO
+SELECT '2 - Usun¹³em Filrodz' as operacja
+DELETE FROM Wypo
+GO
+SELECT '3 - Usun¹³em Wypo' as operacja
+DELETE FROM Klienci
+GO
+SELECT '4 - Usun¹³em Klienci' as operacja
+DELETE FROM Kasety
+GO
+SELECT '5 - Usun¹³em Kasety' as operacja
+DELETE FROM Filmy
+GO
+SELECT '6 - Usun¹³em Filmy' as operacja
+DELETE FROM Rezyser
+GO
+SELECT '7 - Usun¹³em Rezyser' as operacja
+DELETE FROM Kraj
+GO
+SELECT '8 - Usun¹³em Kraj' as operacja
+DELETE FROM Rodzaj
+GO
+SELECT '9 - Usun¹³em Rodzaj' as operacja
+--
+-- Wstawienie wierszy do tabeli KRAJ (uwaga sprawdŸ czy masz identity(1,1)
+--
+insert into Kraj (idkraj,krajprod) values (1,'POLSKA')
+insert into Kraj (idkraj,krajprod) values (2,'ROSJA')
+insert into Kraj (idkraj,krajprod) values (3,'NIEMCY')
+insert into Kraj (idkraj,krajprod) values (4,'WIELKA BRYTANIA')
+insert into Kraj (idkraj,krajprod) values (5,'HISZPANIA')
+insert into Kraj (idkraj,krajprod) values (6,'FRANCJA')
+insert into Kraj (idkraj,krajprod) values (7,'W£OCHY')
+insert into Kraj (idkraj,krajprod) values (8,'USA')
+insert into Kraj (idkraj,krajprod) values (9,'GRECJA')
+insert into Kraj (idkraj,krajprod) values (10,'CZECHY')
+GO
+SELECT '1 - Wpisa³em KRAJ' as operacja,COUNT(*) FROM Kraj
+--
+-- Wstawienie wierszy do tabeli RODZAJ (uwaga sprawdŸ czy masz identity(1,1)
+-- 
+insert into Rodzaj (idrodzaj,rodzajfil) values (1, 'KOMEDIA')
+insert into Rodzaj (idrodzaj,rodzajfil) values (2, 'OBYCZAJOWY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (3, 'WOJENNY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (4, 'PSYCHOLOGICZNY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (5, 'DRAMAT')
+insert into Rodzaj (idrodzaj,rodzajfil) values (6, 'KOSTIUMOWY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (7, 'PRZYGODOWY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (8, 'MELODRAMAT')
+insert into Rodzaj (idrodzaj,rodzajfil) values (9, 'HORROR')
+insert into Rodzaj (idrodzaj,rodzajfil) values (10, 'THRILLER')
+insert into Rodzaj (idrodzaj,rodzajfil) values (11, 'SENSACYJNY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (12, 'WESTERN')
+insert into Rodzaj (idrodzaj,rodzajfil) values (13, 'HISTORYCZNY')
+insert into Rodzaj (idrodzaj,rodzajfil) values (14, 'S-F')
+GO
+SELECT '2 - Wpisa³em RODZAJ' as operacja,COUNT(*) FROM Rodzaj
+--
+-- Wstawienie wierszy do tabeli KLIENCI (uwaga sprawdŸ czy masz identity(1,1)
+-- 
+insert into Klienci (idklienta,nazwisko,imie,Wiek,adres,telefon,plec) 
+       values (1, 'KOWALSKI','JAN',30,'KOCHANOWSKIEGO 21','1234567','M')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (2, 'ZIELIÑSKI','ADAM',15,'MARSZA£KOWSKA 21','789675','M')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (3, 'WOJEWODZIÑSKA','KAROLINA',22,'KRÓTKA 2','34567','K')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (4, 'ZIMA','MARIA',50,'WESO£A 21','567','K')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (5, 'KULKA','ROBERT',34,'SMUTNA 21','67','M')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (6, 'JÓZEFOWICZ','PIOTR',42,'REFLEKSYJNA 21','122267','M')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (7, 'PAJACZKOWSKA','ZOFIA',28,'Z£OTA 21','1234567','K')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (8, 'BOGUCKA','BEATA',16,'RÓWNA 2','1234567','K')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (9, 'KOZIO£','ARTUR',40,'B£EDNA 21','12367','M')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (10, 'KALINOWSKA','JADWIGA',21,'SLISKA 21','14567','K')
+insert into Klienci (idklienta,nazwisko,imie,wiek,adres,telefon,plec) 
+       values (11, 'ROBAK','JAN',44,'BRAK DANYCH','1234567','M')
+GO
+SELECT '3 - Wpisa³em KLIENCI' as operacja,COUNT(*) FROM Klienci
+--
+-- Wstawienie wierszy do tabeli REZYSER (uwaga sprawdŸ czy masz identity(1,1)
+-- 
+insert into Rezyser (idrezyser,nazwisko,imie) values (1, 'WAJDA','ANDRZEJ')
+insert into Rezyser (idrezyser,nazwisko,imie) values (2, 'DALANNOY','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (3, 'WYLER','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (4, 'FLEMING','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (5, 'Hitchcock','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (6, 'Cacoyannis ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (7, 'Friedkin ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (8, 'Chêciñski ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (9, 'Antczak  ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (10, 'Donner ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (11, 'Polañski ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (12, 'Costner ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (13, 'Malle ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (14, 'Spielberg ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (15, 'Piczul  ','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (16, 'Wilsmaier','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (17, 'Saura','')
+insert into Rezyser (idrezyser,nazwisko,imie) values (18, 'Annaude','')
+GO
+SELECT '4 - Wpisa³em REZYSER' as operacja,COUNT(*) FROM Rezyser
+--
+-- Wstawienie wierszy do tabeli FILMY (uwaga sprawdŸ czy masz identity(1,1)
+-- 
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (1,'Kana³',1,9,'C')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (2,'Dzwonnik z Notre-Dame',2,8,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (3,'Ben Chur',3,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (4,'Przemine³o z wiatrem',4,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (5,'Ptaki',5,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (6,'Grek Zorba',6,5,'C')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (7,'Egzorcysta',7,6,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (8,'Sami swoi',8,4,'C')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (9,'Nie ma mocnych',8,4,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (10,'Noce i dnie',9,4,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (11,'Zabójcza broñ',10,6,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (12,'Frantic',11,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (13,'Tañcz¹cy z wilkami',12,6,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (14,'Skaza',13,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (15,'Lista Schindlera',14,7,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (16,'Ma³a Wiera',15,4,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (17,'Stalingrad',16,3,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (18,'Eldorado',17,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (19,'Imiê Ró¿y',18,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (20,'Cz³owiek z marmuru',1,5,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (21,'Gorzkie gody',11,3,'K')
+insert into Filmy (idfilmu,tytul,idrezyser,cena,kolor) 
+       values (22,'Park Jurajski',14,5,'K')
+GO
+SELECT '5 - Wpisa³em FILMY' as operacja,COUNT(*) FROM Filmy
+--
+-- Wstawienie wierszy do tabeli KASETY (uwaga sprawdŸ czy masz identity(1,1)
+-- 
+insert into Kasety (idkasety,idfilmu,status) values (101,1,'W')
+insert into Kasety (idkasety,idfilmu,status) values (102,20,'K')
+insert into Kasety (idkasety,idfilmu,status) values (103,3,'K')
+insert into Kasety (idkasety,idfilmu,status) values (104,4,'K')
+insert into Kasety (idkasety,idfilmu,status) values (105,5,'K')
+insert into Kasety (idkasety,idfilmu,status) values (106,6,'K')
+insert into Kasety (idkasety,idfilmu,status) values (107,7,'K')
+insert into Kasety (idkasety,idfilmu,status) values (108,8,'K')
+insert into Kasety (idkasety,idfilmu,status) values (109,9,'K')
+insert into Kasety (idkasety,idfilmu,status) values (110,10,'K')
+insert into Kasety (idkasety,idfilmu,status) values (111,11,'K')
+insert into Kasety (idkasety,idfilmu,status) values (112,12,'K')
+insert into Kasety (idkasety,idfilmu,status) values (113,13,'K')
+insert into Kasety (idkasety,idfilmu,status) values (114,14,'K')
+insert into Kasety (idkasety,idfilmu,status) values (115,15,'K')
+insert into Kasety (idkasety,idfilmu,status) values (116,16,'K')
+insert into Kasety (idkasety,idfilmu,status) values (117,17,'K')
+insert into Kasety (idkasety,idfilmu,status) values (118,18,'K')
+insert into Kasety (idkasety,idfilmu,status) values (119,19,'K')
+insert into Kasety (idkasety,idfilmu,status) values (120,20,'K')
+insert into Kasety (idkasety,idfilmu,status) values (121,21,'W')
+insert into Kasety (idkasety,idfilmu,status) values (122,22,'K')
+insert into Kasety (idkasety,idfilmu,status) values (123,3,'W')
+insert into Kasety (idkasety,idfilmu,status) values (124,4,'K')
+insert into Kasety (idkasety,idfilmu,status) values (125,7,'K')
+insert into Kasety (idkasety,idfilmu,status) values (126,8,'K')
+insert into Kasety (idkasety,idfilmu,status) values (127,11,'K')
+insert into Kasety (idkasety,idfilmu,status) values (128,12,'W')
+insert into Kasety (idkasety,idfilmu,status) values (129,15,'K')
+insert into Kasety (idkasety,idfilmu,status) values (130,16,'W')
+GO
+SELECT '6 - Wpisa³em KASETY' as operacja,COUNT(*) FROM Kasety
+--
+-- Wstawienie wierszy do tabeli WYPO
+-- 
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,101,{d '2016-11-22'},{d '2016-11-24'},21.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (3,101,{d '2016-11-25'},{d '2016-11-25'},10.50)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,102,{d '2016-11-26'},{d '2016-11-27'},5.20)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,103,{d '2016-11-27'},{d '2016-11-28'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,104,{d '2016-11-22'},{d '2016-11-23'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (7,105,{d '2016-11-28'},{d '2016-11-28'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (8,106,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,107,{d '2016-11-28'},{d '2016-11-29'},6.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (8,108,{d '2016-11-29'},{d '2016-11-29'},4.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (10,109,{d '2016-11-22'},{d '2016-11-24'},9.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,110,{d '2016-11-22'},{d '2016-11-25'},12.90)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,111,{d '2016-11-28'},{d '2016-11-28'},6.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (8,112,{d '2016-11-20'},{d '2016-11-22'},10.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,113,{d '2016-11-21'},{d '2016-11-22'},6.50)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (7,114,{d '2016-11-21'},{d '2016-11-22'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,115,{d '2016-11-24'},{d '2016-11-25'},7.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,116,{d '2016-11-22'},{d '2016-11-24'},8.80)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,117,{d '2016-11-26'},{d '2016-11-28'},6.60)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,118,{d '2016-11-22'},{d '2016-11-23'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (1,119,{d '2016-11-25'},{d '2016-11-25'},5.30)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,120,{d '2016-11-27'},{d '2016-11-28'},5.20)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,121,{d '2016-11-24'},{d '2016-11-25'},3.40)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,122,{d '2016-11-25'},{d '2016-11-25'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,123,{d '2016-11-21'},{d '2016-11-22'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (3,124,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,125,{d '2016-11-23'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,126,{d '2016-11-24'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,127,{d '2016-11-23'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (7,128,{d '2016-11-22'},{d '2016-11-24'},10.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (8,129,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,130,{d '2016-11-26'},{d '2016-11-27'},4.40)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,102,{d '2016-11-17'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (1,103,{d '2016-11-19'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,104,{d '2016-11-24'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (3,105,{d '2016-11-29'},{d '2016-11-29'},5.00)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,105,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,107,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,108,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (7,109,{d '2016-11-23'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (8,110,{d '2016-11-24'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (9,111,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (10,112,{d '2016-11-24'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (1,113,{d '2016-11-16'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,114,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (3,115,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (4,116,{d '2016-11-23'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,117,{d '2016-11-20'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (5,118,{d '2016-11-24'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (7,119,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (1,120,{d '2016-11-22'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (2,122,{d '2016-11-23'},NULL,NULL)
+insert into Wypo (idklienta,idkasety,dataw,dataz,kwota) values (6,123,{d '2016-11-24'},{d '2016-11-25'},5.00)
+GO
+SELECT '7 - Wpisa³em WYPO' as operacja,COUNT(*) FROM Wypo
+--
+-- Wstawienie wierszy do tabeli FILRODZ
+-- 
+insert into Filrodz (idfilmu,idrodzaj) values (1,5)
+insert into Filrodz (idfilmu,idrodzaj) values (1,3)
+insert into Filrodz (idfilmu,idrodzaj) values (2,6)
+insert into Filrodz (idfilmu,idrodzaj) values (2,7)
+insert into Filrodz (idfilmu,idrodzaj) values (3,6)
+insert into Filrodz (idfilmu,idrodzaj) values (3,7)
+insert into Filrodz (idfilmu,idrodzaj) values (4,8)
+insert into Filrodz (idfilmu,idrodzaj) values (5,9)
+insert into Filrodz (idfilmu,idrodzaj) values (6,2)
+insert into Filrodz (idfilmu,idrodzaj) values (7,9)
+insert into Filrodz (idfilmu,idrodzaj) values (8,1)
+insert into Filrodz (idfilmu,idrodzaj) values (8,2)
+insert into Filrodz (idfilmu,idrodzaj) values (9,1)
+insert into Filrodz (idfilmu,idrodzaj) values (9,2)
+insert into Filrodz (idfilmu,idrodzaj) values (10,8)
+insert into Filrodz (idfilmu,idrodzaj) values (11,11)
+insert into Filrodz (idfilmu,idrodzaj) values (12,10)
+insert into Filrodz (idfilmu,idrodzaj) values (13,12)
+insert into Filrodz (idfilmu,idrodzaj) values (14,4)
+insert into Filrodz (idfilmu,idrodzaj) values (14,5)
+insert into Filrodz (idfilmu,idrodzaj) values (15,3)
+insert into Filrodz (idfilmu,idrodzaj) values (15,5)
+insert into Filrodz (idfilmu,idrodzaj) values (16,5)
+insert into Filrodz (idfilmu,idrodzaj) values (16,2)
+insert into Filrodz (idfilmu,idrodzaj) values (17,5)
+insert into Filrodz (idfilmu,idrodzaj) values (17,3)
+insert into Filrodz (idfilmu,idrodzaj) values (18,13)
+insert into Filrodz (idfilmu,idrodzaj) values (19,13)
+insert into Filrodz (idfilmu,idrodzaj) values (19,5)
+insert into Filrodz (idfilmu,idrodzaj) values (20,5)
+insert into Filrodz (idfilmu,idrodzaj) values (21,5)
+insert into Filrodz (idfilmu,idrodzaj) values (21,4)
+insert into Filrodz (idfilmu,idrodzaj) values (22,7)
+insert into Filrodz (idfilmu,idrodzaj) values (22,14)
+GO
+SELECT '8 - Wpisa³em FILRODZ' as operacja,COUNT(*) FROM Filrodz
+--
+-- Wstawienie wierszy do tabeli FILKRA
+-- 
+insert into Filkra (idfilmu,idkraj) values (1,1)
+insert into Filkra (idfilmu,idkraj) values (2,6)
+insert into Filkra (idfilmu,idkraj) values (2,7)
+insert into Filkra (idfilmu,idkraj) values (3,8)
+insert into Filkra (idfilmu,idkraj) values (4,8)
+insert into Filkra (idfilmu,idkraj) values (5,8)
+insert into Filkra (idfilmu,idkraj) values (6,9)
+insert into Filkra (idfilmu,idkraj) values (6,8)
+insert into Filkra (idfilmu,idkraj) values (7,8)
+insert into Filkra (idfilmu,idkraj) values (8,1)
+insert into Filkra (idfilmu,idkraj) values (9,1)
+insert into Filkra (idfilmu,idkraj) values (10,1)
+insert into Filkra (idfilmu,idkraj) values (11,8)
+insert into Filkra (idfilmu,idkraj) values (12,8)
+insert into Filkra (idfilmu,idkraj) values (13,8)
+insert into Filkra (idfilmu,idkraj) values (14,4)
+insert into Filkra (idfilmu,idkraj) values (14,6)
+insert into Filkra (idfilmu,idkraj) values (15,8)
+insert into Filkra (idfilmu,idkraj) values (16,2)
+insert into Filkra (idfilmu,idkraj) values (17,3)
+insert into Filkra (idfilmu,idkraj) values (18,5)
+insert into Filkra (idfilmu,idkraj) values (19,3)
+insert into Filkra (idfilmu,idkraj) values (19,6)
+insert into Filkra (idfilmu,idkraj) values (19,7)
+insert into Filkra (idfilmu,idkraj) values (20,1)
+insert into Filkra (idfilmu,idkraj) values (21,6)
+insert into Filkra (idfilmu,idkraj) values (21,4)
+insert into Filkra (idfilmu,idkraj) values (22,8)
+GO
+SELECT '9 - Wpisa³em FILKRA' as operacja,COUNT(*) FROM Filkra
+SELECT 'KONIEC wstawiania do bazy danych'
