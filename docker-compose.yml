@@ -1,0 +1,16 @@
+version: '2'
+services:
+  mssql:
+    build: ./MSSQL
+    ports:
+     - "1433:1433"
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: 'yourStrong(!)Password'
+      MSSQL_PID: Developer
+    volumes:
+     - ./MSSQL/output/:/usr/src/output
+     - mssqldata:/var/opt/mssql
+volumes:
+  mssqldata:
+    driver: "local"
