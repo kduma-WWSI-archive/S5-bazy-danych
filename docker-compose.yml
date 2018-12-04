@@ -10,6 +10,7 @@ services:
       MSSQL_PID: Developer
     volumes:
      - ./MSSQL/output/:/usr/src/output
+     - ./MSSQL/sql/:/usr/src/sql
      - mssqldata:/var/opt/mssql
 volumes:
   mssqldata:
