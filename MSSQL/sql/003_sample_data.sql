@@ -70,6 +70,9 @@ ELSE
                     ),
                     (( SELECT TOP 1 id FROM filmy WHERE tytul = 'The Magnificent Seven' ),
                     ( SELECT TOP 1 id FROM kraje WHERE nazwa = 'USA' )
+                    ),
+                    (( SELECT TOP 1 id FROM filmy WHERE tytul = 'The Magnificent Seven' ),
+                    ( SELECT TOP 1 id FROM kraje WHERE nazwa = 'Wielka Brytania' )
                     )
 
         
