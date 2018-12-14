@@ -658,6 +658,7 @@ GO
 
 
 SELECT * FROM dbo.kasety_danego_filmu(1)
+--SELECT * FROM z501_03.kasety_danego_filmu(1)
 GO
 
 
@@ -665,4 +666,5 @@ GO
 
 
 SELECT dbo.pelna_nazwa_osoby(1)
+--SELECT z501_03.pelna_nazwa_osoby(1)
 GO
