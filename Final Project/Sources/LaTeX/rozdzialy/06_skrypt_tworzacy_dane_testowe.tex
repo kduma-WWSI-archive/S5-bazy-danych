@@ -1,4 +1,17 @@
 \section{Skrypt tworzący dane testowe}
 
-ZRZUT EKRANÓW Z KOMUNIKATÓW PO WSTAWIANIU DANYCH <np. ILE DANYCH
-DO KAZDEJ TABELI WPROWADZONO>
+W skrypcie tworzącym, w pierwszej kolejności definiujemy zbiór danych testowych (na przykład tak jak na listingu \ref{lst:create-data-script-declare}), a w dalszej części tworzymy i dodajemy do bazy danych, dane testowe (na przykład tak jak na listingu \ref{lst:create-data-script} lub listingu \ref{lst:create-data-script-2}).
+
+Część tabel, jak na przykład tabela \texttt{uzytkownicy}, jest wypełniana w sposób losowy (Listing \ref{lst:create-data-script-2}). Oznacza to że wraz z każdym uruchomieniem skryptu dane dodane do baziy danych będą inne.
+
+\lstinputlisting[language=SQL, caption=Fragment deklaracji danych testowych, firstline=6, lastline=8, label={lst:create-data-script-declare}]{../../skrypt_tworzacy_dane_testowe.sql}
+
+\lstinputlisting[language=SQL, caption=Fragment prostego tworzenia danych testowych, firstline=53, lastline=60, label={lst:create-data-script}]{../../skrypt_tworzacy_dane_testowe.sql}
+
+\lstinputlisting[language=SQL, caption=Fragment losowego tworzenia danych testowych, firstline=70, lastline=82, label={lst:create-data-script-2}]{../../skrypt_tworzacy_dane_testowe.sql}
+
+\subsection{Wynik uruchomienia całego skryptu w trybie wsadowym}
+
+W momencie wykonywania skryptu, podaje on liczbę dodanych wierszy do każdej z tabel, w formacie takim jak na listingu \ref{lst:create-data}.
+
+\lstinputlisting[caption=Wynik uruchomienia całego skryptu tworzącego dane testowe w trybie wsadowym, label={lst:create-data}]{../Logs/skrypt_tworzacy_dane_testowe.sql-second-run.log}

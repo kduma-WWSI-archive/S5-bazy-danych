@@ -3,6 +3,38 @@
 Jak można zauważyć na Rysunku \ref{fig:diagram}, w bazie danych znajduje się jedna dodatkowa tabela \texttt{db\_status} z jednym polem \texttt{version} - służy ona do przechowywania wersji bazy danych.
 Każda operacja w \href{run:skrypt_tworzacy_obiekty_w_bazie_danych.sql}{skrypcie tworzącym} sprawdza i porównuje obecną oraz oczekiwaną wersję dla danej operacji. 
 Dzięki temu zabiegowi nie będzie można uruchomić danej operacji dla jednej bazy danych wielokrotnie. Dodatkowo aktualizacja istniejącej bazy danych do najnowszej wersji będzie uproszczona - wystarczy uruchomić najnowszą wersję skryptu, a wykonane zostaną tylko nowe operacje dodane od ostatniego uruchomienia skryptu instalacyjnego.
+Każda operacja jest opakowana zgodnie z szablonem z listingu \ref{lst:versioning}.
+
+\begin{lstlisting}[language=SQL, caption=Szablon kodu wersjonowanego, label={lst:versioning}]
+PRINT 'Wersja X: ''Utworzenie tabeli z miastami'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = X)
+      BEGIN
+		
+		<<< MIEJSCE NA KOD >>>        
+            
+        UPDATE db_status SET version = 1 WHERE version = X;
+        PRINT 'Wersja X: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji X';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < X)
+          BEGIN
+            RAISERROR ('Wersja X: Baza danych jest w za niskiej wersji (wymagana jest wersja X) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja X: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja X: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+\end{lstlisting}
+
 Dodatkowo w przypadku wystąpienia jakichkolwiek błędów jest przewidziana procedura ich łapania - na listingu \ref{lst:catch} widzimy zawartość bloku \texttt{CATCH} skryptu instalacyjnego. Skrypt został przygotowany w taki sposób aby w przypadku wystąpienia błędu przerywał działanie\footnote{Aby wywołanie funkcji \href{https://docs.microsoft.com/en-us/sql/t-sql/language-elements/raiserror-transact-sql?view=sql-server-2017}{\texttt{RAISERROR}} przekazało kontrolę do bloku \texttt{CATCH}, parametr \texttt{severity} musi mieć wartość z zakresu od \texttt{11} do \texttt{19}. Wartości poniżej nie powodują przerwania skryptu, a wartości powyżej terminują połączenie z bazą danych.} i przechodził od razu do bloku \texttt{CATCH}.
 
 \begin{lstlisting}[language=SQL, caption=Blok CATCH w skrypcie tworzącym, label={lst:catch}]

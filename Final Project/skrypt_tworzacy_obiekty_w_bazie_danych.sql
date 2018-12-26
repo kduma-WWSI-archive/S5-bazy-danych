@@ -551,6 +551,127 @@ ELSE
 
 
 
+PRINT 'Wersja 14: ''Utworzenie widoku z lista wszystkich najmow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 13)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE VIEW lista_najmow
+            AS
+              SELECT nazwisko, imie, data_rozpoczecia, data_zakonczenia, nazwa nazwa_obiektu, koszt calkowity_koszt
+                  FROM najmy n
+                  JOIN uzytkownicy u on n.uzytkownik_id = u.id
+                  JOIN obiekty o on n.obiekt_id = o.id;
+        '
+    
+        UPDATE db_status SET version = 14 WHERE version = 13;
+        PRINT 'Wersja 14: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 14';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 13)
+          BEGIN
+            RAISERROR ('Wersja 14: Baza danych jest w za niskiej wersji (wymagana jest wersja 13) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 14: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 14: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 15: ''Utworzenie widoku z lista popularnosci obiektow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 14)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE VIEW lista_popularnosci_obiektow
+            AS
+              SELECT id, nazwa, adres, (SELECT COUNT(*) FROM najmy WHERE najmy.obiekt_id = obiekty.id) liczba_najmow
+              FROM obiekty;
+        '
+    
+        UPDATE db_status SET version = 15 WHERE version = 14;
+        PRINT 'Wersja 15: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 15';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 14)
+          BEGIN
+            RAISERROR ('Wersja 15: Baza danych jest w za niskiej wersji (wymagana jest wersja 14) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 15: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 15: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 16: ''Utworzenie widoku z lista niewynajmowanych obiektow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 15)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE VIEW lista_niepopularnych_obiektow
+            AS
+              SELECT id, nazwa, adres
+                FROM lista_popularnosci_obiektow
+                GROUP BY id, nazwa, adres
+                HAVING SUM(liczba_najmow) = 0
+        '
+    
+        UPDATE db_status SET version = 16 WHERE version = 15;
+        PRINT 'Wersja 16: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 16';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 15)
+          BEGIN
+            RAISERROR ('Wersja 16: Baza danych jest w za niskiej wersji (wymagana jest wersja 15) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 16: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 16: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
 
 
 

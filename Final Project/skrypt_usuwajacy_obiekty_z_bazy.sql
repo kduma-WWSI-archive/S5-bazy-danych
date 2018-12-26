@@ -2,6 +2,114 @@ BEGIN TRY
 
 
 
+PRINT 'Wersja 16: ''Utworzenie widoku z lista niewynajmowanych obiektow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 16)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP VIEW lista_niepopularnych_obiektow;
+        '
+    
+        UPDATE db_status SET version = 15 WHERE version = 16;
+        PRINT 'Wersja 16: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 15';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 16)
+          BEGIN
+            RAISERROR ('Wersja 16: Baza danych jest w za wysokiej wersji (wymagana jest wersja 16) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 16: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 16: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 15: ''Utworzenie widoku z lista popularnosci obiektow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 15)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP VIEW lista_popularnosci_obiektow;
+        '
+    
+        UPDATE db_status SET version = 14 WHERE version = 15;
+        PRINT 'Wersja 15: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 14';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 15)
+          BEGIN
+            RAISERROR ('Wersja 15: Baza danych jest w za wysokiej wersji (wymagana jest wersja 15) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 15: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 15: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 14: ''Utworzenie widoku z lista wszystkich najmow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 14)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP VIEW lista_najmow;
+        '
+    
+        UPDATE db_status SET version = 13 WHERE version = 14;
+        PRINT 'Wersja 14: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 13';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 14)
+          BEGIN
+            RAISERROR ('Wersja 14: Baza danych jest w za wysokiej wersji (wymagana jest wersja 14) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 14: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 14: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
 PRINT 'Wersja 13: ''Utworzenie indeksu unikatowego w tabeli z uzytkownikami'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN

@@ -55,6 +55,42 @@ sleep 15s
 	-s \| \
 	-w 2000 \
 	| tee /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql-second-run.log
+
+/opt/mssql-tools/bin/sqlcmd \
+	-S localhost \
+	-U sa \
+	-P "$SA_PASSWORD" \
+	-d projekt \
+	-i /usr/src/data/skrypt_tworzacy_dane_testowe.sql \
+	-y 30 \
+	-Y 30 \
+	-s \| \
+	-w 2000 \
+	| tee /usr/src/output/skrypt_tworzacy_dane_testowe.sql.log
+
+/opt/mssql-tools/bin/sqlcmd \
+	-S localhost \
+	-U sa \
+	-P "$SA_PASSWORD" \
+	-d projekt \
+	-i /usr/src/data/skrypt_usuwajacy_dane_testowe.sql \
+	-y 30 \
+	-Y 30 \
+	-s \| \
+	-w 2000 \
+	| tee /usr/src/output/skrypt_usuwajacy_dane_testowe.sql.log
+
+/opt/mssql-tools/bin/sqlcmd \
+	-S localhost \
+	-U sa \
+	-P "$SA_PASSWORD" \
+	-d projekt \
+	-i /usr/src/data/skrypt_tworzacy_dane_testowe.sql \
+	-y 30 \
+	-Y 30 \
+	-s \| \
+	-w 2000 \
+	| tee /usr/src/output/skrypt_tworzacy_dane_testowe.sql-second-run.log
 	
 #	-e \
 

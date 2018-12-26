@@ -1,1 +1,9 @@
 \section{Skrypt usuwający dane testowe}
+
+Ponieważ nasze tabele posiadają kolumny autonumerowanie (typu \texttt{IDENTITY}), to nie możemy skasować danych przy pomocy funkcji \texttt{TRUNCATE}. Aby uzyskać podobny wynik (opróżnienie tabeli ) wykorzystuję dyrektywę \texttt{DBCCCHECKIDENT(<tabela>, RESEED, 0)} która powoduje zresetowanie autonumerowania.
+
+\lstinputlisting[language=SQL, caption=Skrypt usuwający dane testowe, label={lst:destroy-data-script}]{../../skrypt_usuwajacy_dane_testowe.sql}
+
+\subsection{Wynik uruchomienia całego skryptu w trybie wsadowym}
+
+\lstinputlisting[caption=Wynik uruchomienia całego skryptu usuwającego dane testowe w trybie wsadowym, label={lst:destroy-data}]{../Logs/skrypt_usuwajacy_dane_testowe.sql.log}
