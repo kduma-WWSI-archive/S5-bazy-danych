@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+require_once('vendor/autoload.php');
+
+$climate = new League\CLImate\CLImate;
+
+try {
+    $climate->description('SQL Midrator Script Generator');
+    $climate->arguments->add(require __DIR__.'/src/arguments.php');
+    $climate->arguments->parse();
+
+    if($climate->arguments->defined('help')){
+        /** @noinspection PhpVoidFunctionResultUsedInspection */
+        return $climate->usage();
+    }
+
+    $processor = new App\Processor($climate);
+
+    $path = realpath($climate->arguments->get('path'));
+    if(!$path || !is_dir($path))
+        throw new Exception("Provided path is not a directory!");
+
+    $processor->crawl($path);
+    $processor->build();
+    $processor->export($climate->arguments->get('up'), $climate->arguments->get('down'));
+
+    $climate->comment('Scripts Exported!');
+
+} catch (Exception $e) {
+    $climate->error($e->getMessage());
+    $climate->usage();
+}

@@ -1,0 +1,15 @@
+-- Przygotowanie tabeli do przechowywania statusu (wersji) bazy danych
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    PRINT 'Tabela wersjonowania juz istnieje';
+  END
+ELSE
+  BEGIN
+    CREATE TABLE db_status (
+      version INT NOT NULL DEFAULT (0)
+    )
+
+    INSERT INTO db_status (version) VALUES (0);
+
+    PRINT 'Tabela wersjonowania zostala utworzona';
+  END

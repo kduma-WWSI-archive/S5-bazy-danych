@@ -1,0 +1,13 @@
+-- Usunięcie tabeli do przechowywania statusu (wersji) bazy danych
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 0)
+      BEGIN
+        DROP TABLE db_status;
+        PRINT 'Tabela wersjonowania zostala skasowana';
+      END
+    ELSE
+      BEGIN
+        RAISERROR ('Nie mozna usunac tabeli wersjonowania poniewaz ma niezerowa wersje', 11, 2);
+      END
+  END
