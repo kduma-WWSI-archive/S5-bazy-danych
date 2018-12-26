@@ -4,6 +4,8 @@ RUN mkdir -p /usr/src/scripts
 RUN mkdir -p /usr/src/output
 RUN mkdir -p /usr/src/data
 
+RUN apt update && apt install php7.0 php7.0-mbstring -y
+
 COPY ./scripts/ /usr/src/scripts
 
 RUN chmod +x /usr/src/scripts/entrypoint.sh

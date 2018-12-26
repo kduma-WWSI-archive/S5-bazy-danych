@@ -49,7 +49,7 @@ class Script
     public static function make(string $file, int $version) : self
     {
         $contents = file_get_contents($file);
-        [$up, $down] = explode("\n---~~~\n", $contents, 2);
+        list($up, $down) = explode("\n---~~~\n", $contents, 2);
 
         $name = str_replace('_', ' ', substr($file, strpos($file, '_')+1, -4));
 
