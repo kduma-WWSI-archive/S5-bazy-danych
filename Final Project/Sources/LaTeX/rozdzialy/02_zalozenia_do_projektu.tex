@@ -1,15 +1,45 @@
 \section{Założenia do projektu}
 
+Przyjęte zostały następujące założenia do projektu
+\begin{enumerate}
 
+	\item Podstawowe Obiekty
+	\begin{itemize}
+		\item \texttt{Obiekt} - obiekt najmu - np. konkretny dom lub mieszkanie,
+		\item \texttt{Użytkownik} - osoba wynajmująca mieszkanie lub dom,
+%		\item \texttt{Miasto} oraz \texttt{Dzielnica} - kategorie "geograficzne",
+%		\item \texttt{Kategoria} - kategorie "nie-geograficzne" (np. \textsl{Dom}, \textsl{Willa} lub \textsl{Kawalerka}).
+	\end{itemize}
 
-%To jest test222: 
+	\item Przechowywane zadania (transakcje)
+	\begin{itemize}
+		\item \texttt{Najem} - transakcja związana z wynajęciem \texttt{Obiektu} przez \texttt{Użytkownika}.
+	\end{itemize}
+	
+	\item Szczegóły opisu
+	\begin{itemize}
+		\item \texttt{Użytkownik} - potrzeba przechowania informacji: nazwisko klienta, imię klienta, wiek klienta, adres zamieszkania klienta, telefon klienta, płeć klienta oraz login używany do logowania do bazy danych.
 
-%\attachfile{../../zadanie_koncowe.sql.log}
+		\item \texttt{Obiekt} - potrzeba przechowania informacji: nazwa własna obiektu, adres obiektu, dzienna stawka najmu obiektu, kategoria obiektu, obecny status najmu obiektu (informacja czy dany obiekt jest obecnie wolny lub zajęty), opis obiektu oraz inne atrybuty odpowiednie dla zgromadzonych obiektów.
+		\begin{itemize}
+			\item Każdy obiekt może znajdować się w wielu różnych kategoriach,
+			\item Dla uproszczenia inne atrybuty będą znajdować się w opisie danego obiektu.
+		\end{itemize}
+		
+		\item \texttt{Najem} - potrzeba przechowania informacji: użytkownika-najemca, wynajmowany obiekt, data rozpoczęcia najmu, data zakończenia najmu, koszt najmu.
+		\begin{itemize}
+			\item Najem to transakcja tylko jednego \texttt{Użytkownika} i tylko jednego \texttt{Obiektu},
+			\item Dla uproszczenia najem jest liczony od godziny 00:00 do godziny 23:59,
+			\item Jeden \texttt{Obiekt} może być w danym czasie wynajęty tylko jednemu użytkownikowi.
+		\end{itemize}
+		
+	\end{itemize}
 
+	\item Użytkownicy i Uprawnienia
+		\begin{itemize}
+			\item Administrator ma dostęp do danych wszystkich użytkowników,
+			\item Każdy \texttt{Użytkownik} ma założone oddzielne konto serwera SQL,
+			\item Użytkownicy nie widzą danych oraz wypożyczeń innych użytkowników.
+		\end{itemize}
 
-\lstinputlisting[language=SQL, caption=skrypt\_tworzacy\_obiekty\_w\_bazie\_danych.sql]{../../skrypt_tworzacy_obiekty_w_bazie_danych.sql}
-
-
-\lstinputlisting[language=SQL,caption=skrypt\_usuwajacy\_obiekty\_z\_bazy.sql.sql]{../../skrypt_usuwajacy_obiekty_z_bazy.sql}
-
-%\lstinputlisting[language=SQL, firstline=1, lastline=20, frame=single, numbers=left, breaklines=true, breakatwhitespace=false]{../zadanie_koncowe.sql.log}
+\end{enumerate}

@@ -4,7 +4,7 @@ php /usr/src/data/Sources/BuildTool/build \
 	/usr/src/data/Sources/SQL \
 	/usr/src/data/skrypt_tworzacy_obiekty_w_bazie_danych.sql \
 	/usr/src/data/skrypt_usuwajacy_obiekty_z_bazy.sql \
-	| tee -a /usr/src/output/buildtool.log
+	| tee /usr/src/output/buildtool.log
 	
 sleep 15s
 
@@ -18,7 +18,7 @@ sleep 15s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	| tee -a /usr/src/output/create_database.sql.log
+	| tee /usr/src/output/create_database.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
 	-S localhost \
@@ -30,7 +30,7 @@ sleep 15s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	| tee -a /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql.log
+	| tee /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
 	-S localhost \
@@ -42,7 +42,7 @@ sleep 15s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	| tee -a /usr/src/output/skrypt_usuwajacy_obiekty_z_bazy.sql.log
+	| tee /usr/src/output/skrypt_usuwajacy_obiekty_z_bazy.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
 	-S localhost \
@@ -54,7 +54,7 @@ sleep 15s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	| tee -a /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql-second-run.log
+	| tee /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql-second-run.log
 	
 #	-e \
 
@@ -80,8 +80,8 @@ sleep 15s
 while true ; do
 	cd /usr/src/data/Sources/LaTeX \
 		&& pdflatex -output-directory=output/ -interaction=batchmode Projekt\ Koncowy.tex \
-		| tee -a /usr/src/output/pdflatex.log \
+		| tee /usr/src/output/pdflatex.log \
 		&& \cp -r output/Projekt\ Koncowy.pdf ../../Projekt\ Koncowy.pdf
 
-		sleep 60s
+		sleep 30s
 done

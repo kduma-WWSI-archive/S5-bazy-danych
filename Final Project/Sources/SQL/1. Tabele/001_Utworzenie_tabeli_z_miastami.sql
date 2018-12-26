@@ -1,0 +1,10 @@
+CREATE TABLE miasta (
+  id INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
+  nazwa VARCHAR(75) NOT NULL
+);
+GO;
+
+---~~~
+
+DROP TABLE miasta;
+GO;

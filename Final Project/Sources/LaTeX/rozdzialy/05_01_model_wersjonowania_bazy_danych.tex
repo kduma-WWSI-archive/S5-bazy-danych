@@ -1,0 +1,20 @@
+\subsection{Model wersjonowania bazy danych}
+
+Jak można zauważyć na Rysunku \ref{fig:diagram}, w bazie danych znajduje się jedna dodatkowa tabela \texttt{db\_status} z jednym polem \texttt{version} - służy ona do przechowywania wersji bazy danych.
+Każda operacja w \href{run:skrypt_tworzacy_obiekty_w_bazie_danych.sql}{skrypcie tworzącym} sprawdza i porównuje obecną oraz oczekiwaną wersję dla danej operacji. 
+Dzięki temu zabiegowi nie będzie można uruchomić danej operacji dla jednej bazy danych wielokrotnie. Dodatkowo aktualizacja istniejącej bazy danych do najnowszej wersji będzie uproszczona - wystarczy uruchomić najnowszą wersję skryptu, a wykonane zostaną tylko nowe operacje dodane od ostatniego uruchomienia skryptu instalacyjnego.
+Dodatkowo w przypadku wystąpienia jakichkolwiek błędów jest przewidziana procedura ich łapania - na listingu \ref{lst:catch} widzimy zawartość bloku \texttt{CATCH} skryptu instalacyjnego. Skrypt został przygotowany w taki sposób aby w przypadku wystąpienia błędu przerywał działanie\footnote{Aby wywołanie funkcji \href{https://docs.microsoft.com/en-us/sql/t-sql/language-elements/raiserror-transact-sql?view=sql-server-2017}{\texttt{RAISERROR}} przekazało kontrolę do bloku \texttt{CATCH}, parametr \texttt{severity} musi mieć wartość z zakresu od \texttt{11} do \texttt{19}. Wartości poniżej nie powodują przerwania skryptu, a wartości powyżej terminują połączenie z bazą danych.} i przechodził od razu do bloku \texttt{CATCH}.
+
+\begin{lstlisting}[language=SQL, caption=Blok CATCH w skrypcie tworzącym, label={lst:catch}]
+BEGIN CATCH
+
+  SELECT
+    ERROR_NUMBER() AS ErrorNumber,
+    ERROR_SEVERITY() AS ErrorSeverity,
+    ERROR_STATE() AS ErrorState,
+    ERROR_PROCEDURE() AS ErrorProcedure,
+    ERROR_LINE() AS ErrorLine,
+    ERROR_MESSAGE() AS ErrorMessage;
+
+END CATCH;
+\end{lstlisting}

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/mssql/server:latest
+FROM mcr.microsoft.com/mssql/server:2017-latest-ubuntu
 
 RUN mkdir -p /usr/src/scripts
 RUN mkdir -p /usr/src/output
