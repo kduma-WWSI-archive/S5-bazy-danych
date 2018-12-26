@@ -18,3 +18,57 @@ Wszystkie tabele są tworzone przez 13 skryptów \texttt{SQL}:
 \end{itemize}
 
 Tworzenie relacji pomiędzy tabelami oraz indeksów zostało oddzielone od operacji tworzenia poszczególnych tabel - celem tego działania jest lepsza organizacja skryptów. Dodatkowo oddzielając te operacje, w przypadku wystąpienia jakiegoś błędu jesteśmy w stanie określić co i gdzie się "wysypało".
+
+\subsubsection{Utworzenie tabeli z obiektami}
+
+Ponieważ polecenia \href{https://docs.microsoft.com/pl-pl/sql/t-sql/statements/create-default-transact-sql?view=sql-server-2017}{\texttt{CREATE DEFAULT}} oraz \href{https://docs.microsoft.com/pl-pl/sql/t-sql/statements/create-rule-transact-sql?view=sql-server-2017}{\texttt{CREATE RULE}} zostały zdeprecjonowane i w kolejnych wersjach SQL Serwera prawdopodobnie zostaną usunięte zdecydowałem się umieścić wartości domyślne oraz reguły sprawdzające w definicjach konkretnych tabel.
+
+W wyniku projektowania zostało dodatkowo ustalone że \texttt{dzienna\_stawka\_najmu} musi być większa od 0.
+
+Status obiektu znajdujący się w polu \texttt{obecnie\_wynajete} może przyjmować dwie wartości \texttt{T} oraz \texttt{N} - odpowiednio dla obiekty wynajętego oraz wolnego.
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący tabelę \texttt{obiekty}}, label={lst:table-objects}]
+CREATE TABLE obiekty (
+  id INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
+
+  dzielnica_id INT NOT NULL,
+  kategoria_id INT NOT NULL,
+
+  nazwa VARCHAR(150) NOT NULL,
+  adres VARCHAR(150) NOT NULL DEFAULT 'Brak Danych',
+  dzienna_stawka_najmu DECIMAL(10, 2) NOT NULL CHECK (dzienna_stawka_najmu > 0),
+
+  obecnie_wynajete CHAR(1) NOT NULL DEFAULT 'N' CHECK (obecnie_wynajete IN ('T', 'N')),
+);
+\end{lstlisting}
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.4\textwidth]{objects}
+	\caption{Tabela \texttt{obiekty} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
+	\label{fig:objects}
+\end{figure}
+
+\subsubsection{Utworzenie tabeli z najmami}
+
+Przyjmujemy że domyślną datą rozpoczęcia najmu jest data jego dodania do bazy.
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący tabelę \texttt{obiekty}}, label={lst:table-najmy}]
+CREATE TABLE najmy (
+  id INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
+
+  uzytkownik_id INT NOT NULL,
+  obiekt_id INT NOT NULL,
+
+  data_rozpoczecia DATE NOT NULL DEFAULT getdate(),
+  data_zakonczenia DATE NULL,
+  koszt DECIMAL(15, 2) NULL,
+);
+\end{lstlisting}
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.4\textwidth]{najmy}
+	\caption{Tabela \texttt{najmy} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
+	\label{fig:najmy}
+\end{figure}
