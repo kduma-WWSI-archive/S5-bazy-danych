@@ -19,6 +19,8 @@ Wszystkie tabele są tworzone przez 13 skryptów \texttt{SQL}:
 
 Tworzenie relacji pomiędzy tabelami oraz indeksów zostało oddzielone od operacji tworzenia poszczególnych tabel - celem tego działania jest lepsza organizacja skryptów. Dodatkowo oddzielając te operacje, w przypadku wystąpienia jakiegoś błędu jesteśmy w stanie określić co i gdzie się "wysypało".
 
+Ze względu na to aby nie zajmować zbyt dużo miejsca, poniżej zostaną przedstawione tylko najważniejsze z powyższych skryptów.
+
 \subsubsection{Utworzenie tabeli z obiektami}
 
 Ponieważ polecenia \href{https://docs.microsoft.com/pl-pl/sql/t-sql/statements/create-default-transact-sql?view=sql-server-2017}{\texttt{CREATE DEFAULT}} oraz \href{https://docs.microsoft.com/pl-pl/sql/t-sql/statements/create-rule-transact-sql?view=sql-server-2017}{\texttt{CREATE RULE}} zostały zdeprecjonowane i w kolejnych wersjach SQL Serwera prawdopodobnie zostaną usunięte zdecydowałem się umieścić wartości domyślne oraz reguły sprawdzające w definicjach konkretnych tabel.
@@ -49,7 +51,7 @@ CREATE TABLE obiekty (
 	\label{fig:objects}
 \end{figure}
 
-\subsubsection{Utworzenie tabeli z najmami}
+\subsubsection{Utworzenie tabeli z najmami i Utworzenie indeksu unikatowego w tabeli z najemcami}
 
 Przyjmujemy że domyślną datą rozpoczęcia najmu jest data jego dodania do bazy.
 
@@ -64,6 +66,13 @@ CREATE TABLE najmy (
   data_zakonczenia DATE NULL,
   koszt DECIMAL(15, 2) NULL,
 );
+\end{lstlisting}
+
+Ponieważ w założeniach projektowych przyjeliśmy że najem następuje od północy do godziny 23:59, to zostało wykorzystane pole typu \texttt{DATE}. Więc na przykład jeśli klient wynajmie dany obiekt tylko na jeden dzień to w polach \texttt{data\_rozpoczecia} oraz \texttt{data\_zakonczenia} wartość będzie ta sama.
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący indeks unikatowy w tabeli \texttt{obiekty}}, label={lst:table-najmy}]
+CREATE UNIQUE INDEX najemcy_ui
+   ON najmy (uzytkownik_id, obiekt_id, data_rozpoczecia);
 \end{lstlisting}
 
 \begin{figure}[h]
