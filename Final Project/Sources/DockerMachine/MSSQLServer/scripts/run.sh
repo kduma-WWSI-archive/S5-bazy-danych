@@ -1,9 +1,12 @@
 #!/bin/bash
 
-php /usr/src/data/Sources/BuildTool/build /usr/src/data/Sources/SQL /usr/src/data/skrypt_tworzacy_obiekty_w_bazie_danych.sql  /usr/src/data/skrypt_usuwajacy_obiekty_z_bazy.sql
-
-
-sleep 30s
+php /usr/src/data/Sources/BuildTool/build \
+	/usr/src/data/Sources/SQL \
+	/usr/src/data/skrypt_tworzacy_obiekty_w_bazie_danych.sql \
+	/usr/src/data/skrypt_usuwajacy_obiekty_z_bazy.sql \
+	| tee -a /usr/src/output/buildtool.log
+	
+sleep 15s
 
 /opt/mssql-tools/bin/sqlcmd \
 	-S localhost \
@@ -15,7 +18,6 @@ sleep 30s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	-e \
 	| tee -a /usr/src/output/create_database.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
@@ -28,7 +30,6 @@ sleep 30s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	-e \
 	| tee -a /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
@@ -41,7 +42,6 @@ sleep 30s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	-e \
 	| tee -a /usr/src/output/skrypt_usuwajacy_obiekty_z_bazy.sql.log
 
 /opt/mssql-tools/bin/sqlcmd \
@@ -54,8 +54,9 @@ sleep 30s
 	-Y 30 \
 	-s \| \
 	-w 2000 \
-	-e \
-	| tee -a /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql-second.log
+	| tee -a /usr/src/output/skrypt_tworzacy_obiekty_w_bazie_danych.sql-second-run.log
+	
+#	-e \
 
 #FILES=/usr/src/sql/*.sql
 #for f in $FILES
@@ -75,6 +76,12 @@ sleep 30s
 #	fi
 #done
 
+
 while true ; do
-	sleep 90s
+	cd /usr/src/data/Sources/LaTeX \
+		&& pdflatex -output-directory=output/ -interaction=batchmode Projekt\ Koncowy.tex \
+		| tee -a /usr/src/output/pdflatex.log \
+		&& \cp -r output/Projekt\ Koncowy.pdf ../../Projekt\ Koncowy.pdf
+
+		sleep 60s
 done
