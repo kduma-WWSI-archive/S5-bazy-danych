@@ -2,6 +2,78 @@ BEGIN TRY
 
 
 
+PRINT 'Wersja 18: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 18)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP TRIGGER wylicz_koszt_najmu;
+        '
+    
+        UPDATE db_status SET version = 17 WHERE version = 18;
+        PRINT 'Wersja 18: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 17';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 18)
+          BEGIN
+            RAISERROR ('Wersja 18: Baza danych jest w za wysokiej wersji (wymagana jest wersja 18) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 18: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 18: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 17)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP FUNCTION koszt_najmu;
+        '
+    
+        UPDATE db_status SET version = 16 WHERE version = 17;
+        PRINT 'Wersja 17: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 16';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 17)
+          BEGIN
+            RAISERROR ('Wersja 17: Baza danych jest w za wysokiej wersji (wymagana jest wersja 17) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 17: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 17: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
 PRINT 'Wersja 16: ''Utworzenie widoku z lista niewynajmowanych obiektow'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN

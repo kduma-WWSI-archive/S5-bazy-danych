@@ -672,6 +672,107 @@ ELSE
 
 
 
+PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 16)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE FUNCTION koszt_najmu (@najem_id INT)
+            RETURNS DECIMAL(15, 2)
+            AS
+            BEGIN
+          		DECLARE @dzienna_stawka DECIMAL(10,2);
+          		DECLARE @data_rozpoczecia DATE;
+          		DECLARE @data_zakonczenia DATE;
+          
+              SELECT @dzienna_stawka = o.dzienna_stawka_najmu,
+                     @data_rozpoczecia = n.data_rozpoczecia,
+                     @data_zakonczenia = data_zakonczenia
+                FROM najmy n
+                JOIN obiekty o on n.obiekt_id = o.id
+                WHERE n.id = @najem_id;
+          
+              IF @data_zakonczenia IS NULL
+                RETURN NULL;
+          
+              RETURN (1+DATEDIFF(DAY, @data_rozpoczecia, @data_zakonczenia))*@dzienna_stawka;
+            END
+        '
+    
+        UPDATE db_status SET version = 17 WHERE version = 16;
+        PRINT 'Wersja 17: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 17';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 16)
+          BEGIN
+            RAISERROR ('Wersja 17: Baza danych jest w za niskiej wersji (wymagana jest wersja 16) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 17: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 17: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 18: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 17)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE TRIGGER wylicz_koszt_najmu
+            ON najmy
+            AFTER INSERT, UPDATE
+            AS
+            BEGIN
+              UPDATE najmy
+                SET koszt = dbo.koszt_najmu(n.id)
+                FROM najmy n
+                JOIN inserted i ON n.id = i.id
+                WHERE UPDATE (data_zakonczenia) OR NOT EXISTS(SELECT 1 FROM DELETED)
+            END
+        '
+    
+        UPDATE db_status SET version = 18 WHERE version = 17;
+        PRINT 'Wersja 18: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 18';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 17)
+          BEGIN
+            RAISERROR ('Wersja 18: Baza danych jest w za niskiej wersji (wymagana jest wersja 17) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 18: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 18: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
 
 
 

@@ -114,6 +114,12 @@ sleep 15s
 
 
 while true ; do
+	php /usr/src/data/Sources/BuildTool/build \
+		/usr/src/data/Sources/SQL \
+		/usr/src/data/skrypt_tworzacy_obiekty_w_bazie_danych.sql \
+		/usr/src/data/skrypt_usuwajacy_obiekty_z_bazy.sql \
+		| tee /usr/src/output/buildtool.log
+		
 	cd /usr/src/data/Sources/LaTeX \
 		&& pdflatex -output-directory=output/ -interaction=batchmode Projekt\ Koncowy.tex \
 		| tee /usr/src/output/pdflatex.log \
