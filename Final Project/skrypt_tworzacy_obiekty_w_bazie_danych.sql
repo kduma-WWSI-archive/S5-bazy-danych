@@ -672,31 +672,23 @@ ELSE
 
 
 
-PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu'''
+PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu obiektu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 16)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          CREATE FUNCTION koszt_najmu (@najem_id INT)
+          CREATE FUNCTION koszt_najmu_obiektu (@obiekt_id INT, @liczba_dni INT)
             RETURNS DECIMAL(15, 2)
             AS
             BEGIN
           		DECLARE @dzienna_stawka DECIMAL(10,2);
-          		DECLARE @data_rozpoczecia DATE;
-          		DECLARE @data_zakonczenia DATE;
           
-              SELECT @dzienna_stawka = o.dzienna_stawka_najmu,
-                     @data_rozpoczecia = n.data_rozpoczecia,
-                     @data_zakonczenia = data_zakonczenia
-                FROM najmy n
-                JOIN obiekty o on n.obiekt_id = o.id
-                WHERE n.id = @najem_id;
+              SELECT @dzienna_stawka = dzienna_stawka_najmu
+                FROM obiekty o
+                WHERE id = @obiekt_id;
           
-              IF @data_zakonczenia IS NULL
-                RETURN NULL;
-          
-              RETURN (1+DATEDIFF(DAY, @data_rozpoczecia, @data_zakonczenia))*@dzienna_stawka;
+              RETURN @liczba_dni*@dzienna_stawka;
             END
         '
     
@@ -727,22 +719,37 @@ ELSE
 
 
 
-PRINT 'Wersja 18: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+PRINT 'Wersja 18: ''Utworzenie funkcji wyliczajacej koszt konkretnego najmu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 17)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          CREATE TRIGGER wylicz_koszt_najmu
-            ON najmy
-            AFTER INSERT, UPDATE
+          CREATE FUNCTION koszt_najmu (@najem_id INT)
+            RETURNS DECIMAL(15, 2)
             AS
             BEGIN
-              UPDATE najmy
-                SET koszt = dbo.koszt_najmu(n.id)
+          		DECLARE @koszt DECIMAL(15, 2);
+          		DECLARE @liczba_dni INT;
+          		DECLARE @obiekt_id INT;
+          		DECLARE @data_rozpoczecia DATE;
+          		DECLARE @data_zakonczenia DATE;
+          
+              SELECT @data_rozpoczecia = n.data_rozpoczecia,
+                     @data_zakonczenia = n.data_zakonczenia,
+                     @obiekt_id = o.id
                 FROM najmy n
-                JOIN inserted i ON n.id = i.id
-                WHERE UPDATE (data_zakonczenia) OR NOT EXISTS(SELECT 1 FROM DELETED)
+                JOIN obiekty o on n.obiekt_id = o.id
+                WHERE n.id = @najem_id;
+          
+              IF @data_zakonczenia IS NULL
+                RETURN NULL;
+          
+              SELECT @liczba_dni = (1+DATEDIFF(DAY, @data_rozpoczecia, @data_zakonczenia));
+          
+              SELECT @koszt = dbo.koszt_najmu_obiektu(@obiekt_id, @liczba_dni);
+          
+              RETURN @koszt;
             END
         '
     
@@ -764,6 +771,149 @@ IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
 ELSE
   BEGIN
     RAISERROR ('Wersja 18: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 19: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 18)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE TRIGGER wylicz_koszt_najmu
+            ON najmy
+            AFTER INSERT, UPDATE
+            AS
+            BEGIN
+              UPDATE najmy
+                SET koszt = dbo.koszt_najmu(n.id)
+                FROM najmy n
+                JOIN inserted i ON n.id = i.id
+                WHERE UPDATE (data_zakonczenia) OR NOT EXISTS(SELECT 1 FROM DELETED)
+            END
+        '
+    
+        UPDATE db_status SET version = 19 WHERE version = 18;
+        PRINT 'Wersja 19: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 19';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 18)
+          BEGIN
+            RAISERROR ('Wersja 19: Baza danych jest w za niskiej wersji (wymagana jest wersja 18) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 19: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 19: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 20: ''Utworzenie funkcji wyswietlajacej adresowke uzytkownika'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 19)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE FUNCTION adresowka (@uzytkownik_id INT)
+            RETURNS VARCHAR(333) -- 75+75+150+30+3 = 333 - suma długości łączonych pól
+            AS
+            BEGIN
+              DECLARE @adresowka VARCHAR(330);
+          
+              SELECT @adresowka = nazwisko + '' '' + imie + CHAR(13) + telefon + CHAR(13) + adres
+                FROM uzytkownicy
+                WHERE id = @uzytkownik_id;
+          
+              RETURN @adresowka;
+            END
+        '
+    
+        UPDATE db_status SET version = 20 WHERE version = 19;
+        PRINT 'Wersja 20: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 20';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 19)
+          BEGIN
+            RAISERROR ('Wersja 20: Baza danych jest w za niskiej wersji (wymagana jest wersja 19) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 20: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 20: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 21: ''Utworzenie funkcji wyswietlajacej spozniajacych sie uzytkownikow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 20)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE FUNCTION opoznieni (@liczba_dni INT)
+            RETURNS TABLE
+            AS
+              RETURN (
+                SELECT n.id najem_id,
+                       o.nazwa nazwa_obiektu,
+                       DATEDIFF(DAY, n.data_rozpoczecia, getdate()) dni_od_wynajmu,
+                       dbo.koszt_najmu_obiektu(o.id, DATEDIFF(DAY, n.data_rozpoczecia, getdate()) + 1) szacunkowy_koszt_najmu,
+                       dbo.adresowka(u.id) etykieta
+                  FROM najmy n
+                  JOIN obiekty o on n.obiekt_id = o.id
+                  JOIN uzytkownicy u on n.uzytkownik_id = u.id
+                  WHERE DATEDIFF(DAY, n.data_rozpoczecia, getdate()) >= @liczba_dni
+                        AND n.data_zakonczenia IS NULL
+              )
+        '
+    
+        UPDATE db_status SET version = 21 WHERE version = 20;
+        PRINT 'Wersja 21: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 21';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 20)
+          BEGIN
+            RAISERROR ('Wersja 21: Baza danych jest w za niskiej wersji (wymagana jest wersja 20) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 21: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 21: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
   END
 
 

@@ -2,13 +2,121 @@ BEGIN TRY
 
 
 
-PRINT 'Wersja 18: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+PRINT 'Wersja 21: ''Utworzenie funkcji wyswietlajacej spozniajacych sie uzytkownikow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 21)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP FUNCTION opoznieni;
+        '
+    
+        UPDATE db_status SET version = 20 WHERE version = 21;
+        PRINT 'Wersja 21: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 20';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 21)
+          BEGIN
+            RAISERROR ('Wersja 21: Baza danych jest w za wysokiej wersji (wymagana jest wersja 21) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 21: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 21: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 20: ''Utworzenie funkcji wyswietlajacej adresowke uzytkownika'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 20)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP FUNCTION adresowka;
+        '
+    
+        UPDATE db_status SET version = 19 WHERE version = 20;
+        PRINT 'Wersja 20: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 19';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 20)
+          BEGIN
+            RAISERROR ('Wersja 20: Baza danych jest w za wysokiej wersji (wymagana jest wersja 20) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 20: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 20: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 19: ''Utworzenie triggeru aktualizujacego koszt najmu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 19)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP TRIGGER wylicz_koszt_najmu;
+        '
+    
+        UPDATE db_status SET version = 18 WHERE version = 19;
+        PRINT 'Wersja 19: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 18';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 19)
+          BEGIN
+            RAISERROR ('Wersja 19: Baza danych jest w za wysokiej wersji (wymagana jest wersja 19) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 19: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 19: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 18: ''Utworzenie funkcji wyliczajacej koszt konkretnego najmu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 18)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          DROP TRIGGER wylicz_koszt_najmu;
+          DROP FUNCTION koszt_najmu;
         '
     
         UPDATE db_status SET version = 17 WHERE version = 18;
@@ -38,13 +146,13 @@ ELSE
 
 
 
-PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu'''
+PRINT 'Wersja 17: ''Utworzenie funkcji wyliczajacej koszt najmu obiektu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 17)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          DROP FUNCTION koszt_najmu;
+          DROP FUNCTION koszt_najmu_obiektu;
         '
     
         UPDATE db_status SET version = 16 WHERE version = 17;
