@@ -642,7 +642,7 @@ IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
               SELECT id, nazwa, adres
                 FROM lista_popularnosci_obiektow
                 GROUP BY id, nazwa, adres
-                HAVING SUM(liczba_najmow) = 0
+                HAVING SUM(liczba_najmow) = 0;
         '
     
         UPDATE db_status SET version = 16 WHERE version = 15;

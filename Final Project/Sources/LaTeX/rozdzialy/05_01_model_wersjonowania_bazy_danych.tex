@@ -6,7 +6,7 @@ Dzięki temu zabiegowi nie będzie można uruchomić danej operacji dla jednej b
 Każda operacja jest opakowana zgodnie z szablonem z listingu \ref{lst:versioning}.
 
 \begin{lstlisting}[language=SQL, caption=Szablon kodu wersjonowanego, label={lst:versioning}]
-PRINT 'Wersja X: ''Utworzenie tabeli z miastami'''
+PRINT 'Wersja X: ''<<< OPIS OPERACJI >>>'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = X)

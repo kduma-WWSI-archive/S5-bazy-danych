@@ -11,7 +11,7 @@ Wszystkie tabele są tworzone przez 13 skryptów \texttt{SQL}:
 	\item \href{run:Sources/SQL/1. Tabele/007_Utworzenie_relacji_pomiedzy_kategoriami_a_obiektami.sql}{Utworzenie relacji pomiedzy kategoriami a obiektami}
 	\item \href{run:Sources/SQL/1. Tabele/008_Utworzenie_tabeli_z_uzytkownikami.sql}{Utworzenie tabeli z uzytkownikami}
 	\item \href{run:Sources/SQL/1. Tabele/009_Utworzenie_tabeli_z_najmami.sql}{Utworzenie tabeli z najmami}
-	\item \href{run:Sources/SQL/1. Tabele/010_Utworzenie_indeksu_unikatowego_w_tabeli_z_najemcami.sql}{Utworzenie indeksu unikatowego w tabeli z najemcami}
+	\item \href{run:Sources/SQL/1. Tabele/010_Utworzenie_indeksu_unikatowego_w_tabeli_z_najemcami.sql}{Utworzenie indeksu unikatowego w tabeli z najmami}
 	\item \href{run:Sources/SQL/1. Tabele/011_Utworzenie_relacji_pomiedzy_uzytkownikami_a_najmami.sql}{Utworzenie relacji pomiedzy uzytkownikami a najmami}
 	\item \href{run:Sources/SQL/1. Tabele/012_Utworzenie_relacji_pomiedzy_obiektami_a_najmami.sql}{Utworzenie relacji pomiedzy obiektami a najmami}
 	\item \href{run:Sources/SQL/1. Tabele/013_Utworzenie_indeksu_unikatowego_w_tabeli_z_uzytkownikami.sql}{Utworzenie indeksu unikatowego w tabeli z uzytkownikami}
@@ -29,6 +29,13 @@ W wyniku projektowania zostało dodatkowo ustalone że \texttt{dzienna\_stawka\_
 
 Status obiektu znajdujący się w polu \texttt{obecnie\_wynajete} może przyjmować dwie wartości \texttt{T} oraz \texttt{N} - odpowiednio dla obiekty wynajętego oraz wolnego.
 
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.4\textwidth]{objects}
+	\caption{Tabela \texttt{obiekty} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
+	\label{fig:objects}
+\end{figure}
+
 \begin{lstlisting}[language=SQL, caption={Skrypt tworzący tabelę \texttt{obiekty}}, label={lst:table-objects}]
 CREATE TABLE obiekty (
   id INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
@@ -44,18 +51,11 @@ CREATE TABLE obiekty (
 );
 \end{lstlisting}
 
-\begin{figure}[h]
-	\centering
-    \includegraphics[width=0.4\textwidth]{objects}
-	\caption{Tabela \texttt{obiekty} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
-	\label{fig:objects}
-\end{figure}
-
-\subsubsection{Utworzenie tabeli z najmami i Utworzenie indeksu unikatowego w tabeli z najemcami}
+\subsubsection{Utworzenie tabeli z najmami i utworzenie indeksu unikatowego w tabeli z najmami}
 
 Przyjmujemy że domyślną datą rozpoczęcia najmu jest data jego dodania do bazy.
 
-\begin{lstlisting}[language=SQL, caption={Skrypt tworzący tabelę \texttt{obiekty}}, label={lst:table-najmy}]
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący tabelę \texttt{najmy}}, label={lst:table-najmy}]
 CREATE TABLE najmy (
   id INT PRIMARY KEY NOT NULL IDENTITY (1, 1),
 
@@ -68,16 +68,35 @@ CREATE TABLE najmy (
 );
 \end{lstlisting}
 
-Ponieważ w założeniach projektowych przyjeliśmy że najem następuje od północy do godziny 23:59, to zostało wykorzystane pole typu \texttt{DATE}. Więc na przykład jeśli klient wynajmie dany obiekt tylko na jeden dzień to w polach \texttt{data\_rozpoczecia} oraz \texttt{data\_zakonczenia} wartość będzie ta sama.
-
-\begin{lstlisting}[language=SQL, caption={Skrypt tworzący indeks unikatowy w tabeli \texttt{obiekty}}, label={lst:table-najmy}]
-CREATE UNIQUE INDEX najemcy_ui
-   ON najmy (uzytkownik_id, obiekt_id, data_rozpoczecia);
-\end{lstlisting}
-
 \begin{figure}[h]
 	\centering
     \includegraphics[width=0.4\textwidth]{najmy}
 	\caption{Tabela \texttt{najmy} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
 	\label{fig:najmy}
 \end{figure}
+
+Ponieważ w założeniach projektowych przyjeliśmy że najem następuje od północy do godziny 23:59, to zostało wykorzystane pole typu \texttt{DATE}. Więc na przykład jeśli klient wynajmie dany obiekt tylko na jeden dzień to w polach \texttt{data\_rozpoczecia} oraz \texttt{data\_zakonczenia} wartość będzie ta sama. Dzięki temu możemy również utworzyć indeks unikatowy na pola \texttt{uzytkownik\_id}, \texttt{obiekt\_id} oraz \texttt{data\_rozpoczecia}.
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący indeks unikatowy w tabeli \texttt{obiekty}}, label={lst:table-najmy}]
+CREATE UNIQUE INDEX najemcy_ui
+   ON najmy (uzytkownik_id, obiekt_id, data_rozpoczecia);
+\end{lstlisting}
+
+\subsection{Utworzenie relacji pomiędzy użytkownikami a najmami}
+
+Wszystkie tabele zostały połączone relacją (|CONSTRAINT|) typu klucz obcy (|FOREIGN KEY|) tak jak na przykładzie z listingu \ref{lst:table-najmy-foreign}.
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.4\textwidth]{najmy-foreign}
+	\caption{Relacja \texttt{najmy\_obiekty\_fk} wyświetlona w programie \href{https://www.jetbrains.com/datagrip/}{DataGrip}}
+	\label{fig:najmy-foreign}
+\end{figure}
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący relację \texttt{najmy\_obiekty\_fk}}, label={lst:table-najmy-foreign}]
+ALTER TABLE najmy
+  ADD CONSTRAINT najmy_obiekty_fk
+  FOREIGN KEY (obiekt_id)
+  REFERENCES obiekty(id);
+GO;
+\end{lstlisting}

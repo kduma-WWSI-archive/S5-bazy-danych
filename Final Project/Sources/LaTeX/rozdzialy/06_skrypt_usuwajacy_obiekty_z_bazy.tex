@@ -1,0 +1,9 @@
+\section{Skrypt usuwający obiekty z bazy danych}
+
+Ponieważ do każdej operacji tworzącej lub modyfikującej obiekty w bazie danych została napisana również operacja odwrotna, to możliwe jest wygenerowanie skryptu \href{run:skrypt_usuwajacy_obiekty_z_bazy.sql}{\texttt{skrypt\_usuwajacy\_obiekty\_z\_bazy.sql}}.
+
+\subsection{Wynik uruchomienia całego skryptu usuwającego obiekty w trybie wsadowym}
+
+Jak widać na listingu \ref{lst:destroy-objects}, skrypt podaje bardzo dokładne informacje na temat aktualnie wykonywanej operacji. W przypadku tego skryptu, operacje są wykonywane w odwrotnej kolejności niż w skrypcie tworzącym z listingu \ref{lst:create-objects}.
+
+\lstinputlisting[caption=Wynik uruchomienia całego skryptu usuwającego obiekty w trybie wsadowym, label={lst:destroy-objects}]{../Logs/skrypt_usuwajacy_obiekty_z_bazy.sql.log}

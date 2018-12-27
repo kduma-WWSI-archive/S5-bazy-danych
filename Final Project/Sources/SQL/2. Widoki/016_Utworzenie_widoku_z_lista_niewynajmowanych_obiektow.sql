@@ -3,7 +3,7 @@ CREATE VIEW lista_niepopularnych_obiektow
     SELECT id, nazwa, adres
       FROM lista_popularnosci_obiektow
       GROUP BY id, nazwa, adres
-      HAVING SUM(liczba_najmow) = 0
+      HAVING SUM(liczba_najmow) = 0;
 GO;
 
 ---~~~

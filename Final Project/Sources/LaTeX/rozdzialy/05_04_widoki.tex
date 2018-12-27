@@ -3,7 +3,7 @@
 Zostało stworzone kilka widoków:
 \begin{itemize}
 	\item \href{run:Sources/SQL/2. Widoki/014_Utworzenie_widoku_z_lista_wszystkich_najmow.sql}{\texttt{lista\_najmow} - Lista wszystkich najmów}
-	\item \href{run:Sources/SQL/2. Widoki/015_Utworzenie_widoku_z_lista_popularnosci_obiektow.sql}{\texttt{lista\_popularnosci\_obiektow} - Lista obiektów wraz z ilością ich najmów}
+	\item \href{run:Sources/SQL/2. Widoki/015_Utworzenie_widoku_z_lista_popularnosci_obiektow.sql}{\texttt{lista\_popularnosci\_obiektow} - Lista obiektów wraz z ilością (popularnoscią) ich najmów}
 	\item \href{run:Sources/SQL/2. Widoki/016_Utworzenie_widoku_z_lista_niewynajmowanych_obiektow.sql}{\texttt{lista\_niepopularnych\_obiektow} - Lista obiektów które nie zostały nigdy wynajęte}
 \end{itemize}
 
@@ -26,6 +26,15 @@ Widok ten zwraca listę wszystkich najmów, wraz z następującymi polami:
 	\label{fig:lista_najmow}
 \end{figure}
 
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący widok \texttt{lista\_najmow}}, label={lst:view-lista_najmow}]
+CREATE VIEW lista_najmow
+  AS
+    SELECT nazwisko, imie, data_rozpoczecia, data_zakonczenia, nazwa nazwa_obiektu, koszt calkowity_koszt
+        FROM najmy n
+        JOIN uzytkownicy u on n.uzytkownik_id = u.id
+        JOIN obiekty o on n.obiekt_id = o.id;
+\end{lstlisting}
+
 
 
 \subsubsection{\texttt{lista\_niepopularnych\_obiektow} - Lista obiektów które nie zostały nigdy wynajęte}
@@ -36,9 +45,20 @@ Widok ten zwraca listę obiektów które nie zostały nigdy, prze nikogo, wynaj�
 	\item adres obiektu
 \end{itemize}
 
+Widok ten korzysta z innego (nieopisanego w tym dokumencie) widoku - \texttt{lista\_popularnosci\_obiektow}.
+
 \begin{figure}[h]
 	\centering
     \includegraphics[width=0.4\textwidth]{lista_niepopularnych_obiektow}
 	\caption{Wyświetlony widok \texttt{lista\_niepopularnych\_obiektow}}
 	\label{fig:lista_niepopularnych_obiektow}
 \end{figure}
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący widok \texttt{lista\_niepopularnych\_obiektow}}, label={lst:view-lista_niepopularnych_obiektow}]
+CREATE VIEW lista_niepopularnych_obiektow
+  AS
+    SELECT id, nazwa, adres
+      FROM lista_popularnosci_obiektow
+      GROUP BY id, nazwa, adres
+      HAVING SUM(liczba_najmow) = 0;
+\end{lstlisting}
