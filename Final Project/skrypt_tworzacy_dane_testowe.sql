@@ -13,32 +13,14 @@ INSERT INTO @DZIELNICE VALUES ('Dzielnica 1'),('Dzielnica 2'),('Dzielnica 3'),('
 DECLARE @KATEGORIE TABLE (nazwa VARCHAR(20));
 INSERT INTO @KATEGORIE VALUES ('Kategoria 1'),('Kategoria 2'),('Kategoria 3'),('Kategoria 4');
 
-DECLARE @LOGINY TABLE (login VARCHAR(20));
-INSERT INTO @LOGINY VALUES ('login_1'),('login_2'),('login_3'),('login_4');
-
-DECLARE @IMIONA TABLE (imie VARCHAR(20));
-INSERT INTO @IMIONA  VALUES ('Imię 1'),('Imię 2'),('Imię 3'),('Imię 4');
-
-DECLARE @NAZWISKA TABLE (nazwisko VARCHAR(20));
-INSERT INTO @NAZWISKA VALUES ('Nazwisko 1'),('Nazwisko 2'),('Nazwisko 3'),('Nazwisko 4');
-
 DECLARE @ADRESY TABLE (adres VARCHAR(20));
 INSERT INTO @ADRESY VALUES ('Adres 1'),('Adres 2'),('Adres 3'),('Adres 4');
-
-DECLARE @TELEFONY TABLE (telefon VARCHAR(40));
-INSERT INTO @TELEFONY VALUES ('+48 500 349 239'),('+48 234 567 890'),('+48 987 543 123'),('+48 999 444 666');
-
-DECLARE @PLCI TABLE (plec CHAR(1));
-INSERT INTO @PLCI VALUES ('M'),('K');
 
 DECLARE @NAZWY TABLE (nazwa VARCHAR(20));
 INSERT INTO @NAZWY VALUES ('Nazwa 1'),('Nazwa 2'),('Nazwa 3'),('Nazwa 4');
 
 DECLARE @STAWKI TABLE (stawka DECIMAL(10, 2));
 INSERT INTO @STAWKI VALUES (120),(149.99),(64.05),(25.35);
-
-DECLARE @WIEKI TABLE (wiek INT);
-INSERT INTO @WIEKI VALUES (18),(35),(64),(89);
 
 
 
@@ -68,18 +50,47 @@ SELECT @liczba_wierszy = @@ROWCOUNT;
 PRINT 'Do tabeli kategorie dodano '+CAST(@liczba_wierszy AS VARCHAR)+' wiersz(y).';
 
 -- Wstawianie danych do tabeli 'uzytkownicy'
-INSERT INTO uzytkownicy (login, nazwisko, imie, wiek, adres, telefon, plec)
-  SELECT l.login login,
-    (SELECT TOP 1 nazwisko from @NAZWISKA WHERE l.login IS NOT NULL ORDER BY NewID()) nazwisko,
-    (SELECT TOP 1 imie from @IMIONA WHERE l.login IS NOT NULL ORDER BY NewID()) imie,
-    (SELECT TOP 1 wiek from @WIEKI WHERE l.login IS NOT NULL ORDER BY NewID()) wiek,
-    (SELECT TOP 1 adres from @ADRESY WHERE l.login IS NOT NULL ORDER BY NewID()) adres,
-    (SELECT TOP 1 telefon from @TELEFONY WHERE l.login IS NOT NULL ORDER BY NewID()) telefon,
-    (SELECT TOP 1 plec from @PLCI WHERE l.login IS NOT NULL ORDER BY NewID()) plec
-  FROM @LOGINY l;
+EXEC utworz_uzytkownika
+  @login = 'login_1',
+  @nazwisko = 'Jan',
+  @imie = 'Kowalski',
+  @wiek = 25,
+  @adres = 'Ul. Kowalska 23, 02-001, Warszawa',
+  @telefon = '+48 625 548 874',
+  @plec = 'M',
+  @haslo = 'yourStrong(!)Password';
 
-SELECT @liczba_wierszy = @@ROWCOUNT;
-PRINT 'Do tabeli uzytkownicy dodano '+CAST(@liczba_wierszy AS VARCHAR)+' wiersz(y).';
+EXEC utworz_uzytkownika
+  @login = 'login_2',
+  @nazwisko = 'Ewa',
+  @imie = 'Nowak',
+  @wiek = 45,
+  @adres = 'Ul. Warszawska 23, 11-111, Kraków',
+  @telefon = '+48 222 111 333',
+  @plec = 'K',
+  @haslo = 'yourStrong(!)Password';
+
+EXEC utworz_uzytkownika
+  @login = 'login_3',
+  @nazwisko = 'Ignacy',
+  @imie = 'Grzeszczak',
+  @wiek = 45,
+  @adres = 'Ul. Krakowska 23, 33-666, Kielce',
+  @telefon = '+48 864 645 328',
+  @plec = 'M',
+  @haslo = 'yourStrong(!)Password';
+
+EXEC utworz_uzytkownika
+  @login = 'login_4',
+  @nazwisko = 'Julia',
+  @imie = 'Paderewska',
+  @wiek = 45,
+  @adres = 'Ul. Ostatnia 89, 67-125, Grudziądz',
+  @telefon = '+48 852 147 993',
+  @plec = 'K',
+  @haslo = 'yourStrong(!)Password';
+
+PRINT 'Do tabeli uzytkownicy dodano 4 wiersz(y).';
 
 -- Wstawianie danych do tabeli 'obiekty'
 INSERT INTO obiekty (dzielnica_id, kategoria_id, nazwa, adres, dzienna_stawka_najmu, obecnie_wynajete)

@@ -4,13 +4,13 @@
 
 W skrypcie tworzącym, w pierwszej kolejności definiujemy zbiór danych testowych (na przykład tak jak na listingu \ref{lst:create-data-script-declare}), a w dalszej części tworzymy i dodajemy do bazy danych, dane testowe (listing \ref{lst:create-data-script} lub listing \ref{lst:create-data-script-2}).
 
-Część tabel, jak na przykład tabela \texttt{uzytkownicy}, jest wypełniana w sposób losowy\footnote{Zastanawiający może być warunek \texttt{WHERE l.login IS NOT NULL} - jest to pewnego rodzaju "obejście" procesu optymalizacji SQL Server'a. Gdybyśmy nie zastosowali takiej struktury to dane były by wylosowane tylko za pierwszym razem - czyli wszystkie wiersze miały by taką samą wartość danego pola, a w tym przypadku takie zachowanie jest zachowaniem niepożądanym.} (Listing \ref{lst:create-data-script-2}). Oznacza to że wraz z każdym uruchomieniem skryptu dane dodane do bazy danych będą inne.
+Część tabel, jak na przykład tabela \texttt{uzytkownicy}, jest wypełniana w sposób losowy\footnote{Zastanawiający może być warunek \texttt{WHERE d.id IS NOT NULL AND k.id IS NOT NULL} - jest to pewnego rodzaju "obejście" procesu optymalizacji SQL Server'a. Gdybyśmy nie zastosowali takiej struktury to dane były by wylosowane tylko za pierwszym razem - czyli wszystkie wiersze miały by taką samą wartość danego pola, a w tym przypadku takie zachowanie jest zachowaniem niepożądanym.} (Listing \ref{lst:create-data-script-2}). Oznacza to że wraz z każdym uruchomieniem skryptu dane dodane do bazy danych będą inne.
 
 \lstinputlisting[language=SQL, caption=Fragment deklaracji danych testowych, firstline=6, lastline=8, label={lst:create-data-script-declare}]{../../skrypt_tworzacy_dane_testowe.sql}
 
-\lstinputlisting[language=SQL, caption=Fragment prostego tworzenia danych testowych, firstline=53, lastline=60, label={lst:create-data-script}]{../../skrypt_tworzacy_dane_testowe.sql}
+\lstinputlisting[language=SQL, caption=Fragment prostego tworzenia danych testowych, firstline=36, lastline=42, label={lst:create-data-script}]{../../skrypt_tworzacy_dane_testowe.sql}
 
-\lstinputlisting[language=SQL, caption=Fragment losowego tworzenia danych testowych, firstline=70, lastline=82, label={lst:create-data-script-2}]{../../skrypt_tworzacy_dane_testowe.sql}
+\lstinputlisting[language=SQL, caption=Fragment losowego tworzenia danych testowych, firstline=96, lastline=107, label={lst:create-data-script-2}]{../../skrypt_tworzacy_dane_testowe.sql}
 
 \subsubsection{Wynik uruchomienia skryptu tworzącego dane testowe w trybie wsadowym}
 
@@ -22,7 +22,7 @@ W momencie wykonywania skryptu, podaje on liczbę dodanych wierszy do każdej z 
 
 Ponieważ nasze tabele posiadają kolumny autonumerowanie (typu \texttt{IDENTITY}), to nie możemy skasować danych przy pomocy funkcji \texttt{TRUNCATE}. Aby uzyskać podobny wynik (opróżnienie tabeli) wykorzystuję dyrektywę \texttt{DBCC CHECKIDENT(<tabela>, RESEED, 0)} która powoduje zresetowanie autonumerowania w tabeli.
 
-\lstinputlisting[language=SQL, caption=Skrypt usuwający dane testowe, label={lst:destroy-data-script}]{../../skrypt_usuwajacy_dane_testowe.sql}
+\lstinputlisting[language=SQL, caption=Fragment skryptu usuwającego dane testowe, firstline=1, lastline=2, label={lst:destroy-data-script}]{../../skrypt_usuwajacy_dane_testowe.sql}
 
 \subsubsection{Wynik uruchomienia skryptu usuwającego dane testowe w trybie wsadowym}
 

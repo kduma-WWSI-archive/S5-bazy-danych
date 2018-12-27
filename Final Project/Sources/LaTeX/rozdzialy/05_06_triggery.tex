@@ -2,12 +2,12 @@
 
 Zostały stworzone następujące triggery:
 \begin{itemize}
-	\item \href{run:Sources/SQL/5. Triggery/019_Utworzenie_triggeru_aktualizujacego_koszt_najmu.sql}{\texttt{wylicz\_koszt\_najmu} - Funkcja zapisująca koszt najmu}
+	\item \href{run:Sources/SQL/5. Triggery/019_Utworzenie_triggeru_aktualizujacego_koszt_najmu.sql}{\texttt{wylicz\_koszt\_najmu} - Trigger zapisujący koszt najmu}
 \end{itemize}
 
-\subsubsection{\texttt{wylicz\_koszt\_najmu} - Funkcja zapisująca koszt najmu}
+\subsubsection{\texttt{wylicz\_koszt\_najmu} - Trigger zapisujący koszt najmu}
 
-Trigger ten jest uruchamiany w momencie dodania nowego wiersza do tabeli \texttt{najmu} lub aktualizacji już istniejącego. Klauzulą |WHERE| ograniczamy obliczenia tylko do wierszy nowych lub wierszy gdzie kolumna \texttt{data\_zakonczenia} została zaktualizowana. Dzięki wykorzystaniu wcześniej przygotowanej funkcji skalarnej \texttt{koszt\_najmu} (listing \ref{lst:function-koszt_najmu}), kod tego triggera jest stosunkowo prosty i przejrzysty. Trigger został zaprojektowany w taki sposób aby możliwe było wykonywanie zbiorowych operacji - dzięki temu możemy dodawać/aktualizować wiele wierszy a i tak trigger będzie działać prawidłowo. Przykładowy wynik działania widzimy na rysunku \ref{fig:lista_najmow} ze strony \pageref{fig:lista_najmow} - po dodaniu losowych danych testowych, koszty najmów zostały automatycznie obliczone.
+Trigger ten jest uruchamiany w momencie dodania nowego wiersza do tabeli \texttt{najmu} lub aktualizacji już istniejącego. Klauzulą `WHERE` ograniczamy obliczenia tylko do wierszy nowych lub wierszy gdzie kolumna \texttt{data\_zakonczenia} została zaktualizowana. Dzięki wykorzystaniu wcześniej przygotowanej funkcji skalarnej \texttt{koszt\_najmu} (listing \ref{lst:function-koszt_najmu}), kod tego triggera jest stosunkowo prosty i przejrzysty. Trigger został zaprojektowany w taki sposób aby możliwe było wykonywanie zbiorowych operacji - dzięki temu możemy dodawać/aktualizować wiele wierszy a i tak trigger będzie działać prawidłowo. Przykładowy wynik działania widzimy na rysunku \ref{fig:lista_najmow} ze strony \pageref{fig:lista_najmow} - po dodaniu losowych danych testowych, koszty najmów zostały automatycznie obliczone.
 
 \begin{lstlisting}[language=SQL, caption={Skrypt tworzący trigger \texttt{wylicz\_koszt\_najmu}}, label={lst:trigger-wylicz_koszt_najmu}]
 CREATE TRIGGER wylicz_koszt_najmu

@@ -1,10 +1,66 @@
-\subsection{Skrypt tworzący użytkowników i nadający uprawnienia}
+\subsection{Użytkownicy, role i uprawnienia}
 
-% TODO: Uzupełnić
+Przewidziane zostały 3 role dla użytkowników:
+\begin{itemize}
+	\item \texttt{admini\_systemu} - Administratorzy - zarządzają obiektami, kategoriami i miastami
+	\item \texttt{operatorzy\_systemu} - Operatorzy - zarządzają najmami (wynajem i zwroty)
+	\item \texttt{uzytkownicy\_systemu} - Użytkownicy - zarządzają swoimi danymi oraz najmami
+\end{itemize}
+Do tych ról przypisane zostały uprawnienia zgodnie z tabelą \ref{table:permissions}.
 
-8. SKRYPT TWORZĄCY UŻYTKOWNIKÓW BAZY DANYCH <KONTA, UPRAWNIENIA itp>
-W FORMIE:
-a. OPIS UŻYTKOWNIKÓW <ICH ZADANIA>
-b. SKŁADNIA SKRYPTU
-c. ZRZUTY EKRANU Z: UTWORZENIA UZYTKOWNIKÓW, UPRAWNIENIA, TEST
-MOZLIWOŚCI/NIE MOZLIWOŚCI KAZDEGO Z NICH
+Dodatkowo fabrycznie zostali utworzeni dwaj użytkownicy:
+\begin{itemize}
+	\item \texttt{admin} z hasłem \texttt{yourStrong(!)Password} przypisany do roli \texttt{admini\_systemu}
+	\item \texttt{operator} z hasłem \texttt{yourStrong(!)Password} przypisany do roli \texttt{operatorzy\_systemu}
+\end{itemize}
+
+Kolejnych użytkowników roli \texttt{uzytkownicy\_systemu}, można tworzyć za pomocą procedury składowanej z listingu \ref{lst:procedura-utworz_uzytkownika-przyklad} - \texttt{utworz\_uzytkownika}.
+
+\begin{table}[t]
+	{\renewcommand{\arraystretch}{1.5}
+		\begin{tabu} to \textwidth { |X[2,l]||X[1,c]|X[1,c]|X[1,c]| }
+			\hline
+			& \textbf{Administratorzy} & \textbf{Operatorzy} & \textbf{Użytkownicy} \\
+			\hline
+			\hline
+			\multicolumn{4}{|c|}{\textbf{Tabele}} \\
+			\hline
+			\texttt{kategorie} & S, I, U, D & S & S \\
+			\hline
+			\texttt{miasta} & S, I, U, D & S & S \\
+			\hline
+			\texttt{dzielnice} & S, I, U, D & S & S \\
+			\hline
+			\texttt{obiekty} & S, I, U, D & S & S \\
+			\hline
+			\texttt{uzytkownicy} & S & S & S\footnotemark, U\footnotemark \\
+			\hline
+			\texttt{najmy} & S, I, U & S, I, U & S\footnotemark, I, U\footnotemark \\
+			\hline
+			\multicolumn{4}{|c|}{\textbf{Widoki}} \\
+			\hline
+			\texttt{lista\_najmow} & S & S & - \\
+			\hline
+			\texttt{lista\_niepopularnych\_obiektow} & S & - & - \\
+			\hline
+			\texttt{lista\_popularnosci\_obiektow} & S & - & - \\
+			\hline
+			\multicolumn{4}{|c|}{\textbf{Procedury}} \\
+			\hline
+			\texttt{utworz\_uzytkownika} & X & X & - \\
+			\hline
+			\multicolumn{4}{|c|}{S - SELECT, I - INSERT, U - UPDATE, X - EXECUTE} \\
+			\hline
+		\end{tabu}
+		\label{table:permissions}
+		\caption{Role i ich uprawnienia}
+	}
+\end{table}
+
+\addtocounter{footnote}{-4}
+\stepcounter{footnote} \footnotetext{wybieranie i edycja ograniczone tylko do swoich danych}
+\stepcounter{footnote} \footnotetext{tylko pola nazwisko, imie, wiek, adres, telefon, plec}
+\stepcounter{footnote} \footnotetext{wybieranie i edycja ograniczone tylko do swoich danych}
+\stepcounter{footnote} \footnotetext{tylko pole data\_zakonczenia}
+
+

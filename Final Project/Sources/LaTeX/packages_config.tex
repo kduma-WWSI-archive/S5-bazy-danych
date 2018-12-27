@@ -5,6 +5,9 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{tocbibind}
+\usepackage{tabu}
+
+\setlength{\parindent}{0pt}
 
 \graphicspath{ {./obrazki/} }
 
@@ -73,13 +76,18 @@
     captionpos=b,                    
     keepspaces=true,                 
     numbers=left,                    
-    numbersep=5pt,                  
+    numbersep=10pt,                  
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
-    tabsize=2
+    tabsize=2,
+    framexleftmargin=8pt,
+    framextopmargin=3pt,
+    framexbottommargin=3pt, 
+    frame=tb, 
+    framerule=0pt
 }
 
 \renewcommand\lstlistlistingname{Spis listingów}
 \lstset{style=mystyle}
-\lstMakeShortInline[columns=fixed, language=SQL]|
+\lstMakeShortInline[columns=fixed, language=SQL]`

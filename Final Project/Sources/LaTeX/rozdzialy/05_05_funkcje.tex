@@ -10,7 +10,7 @@ Zostały stworzone następujące funkcje:
 
 \subsubsection{\texttt{koszt\_najmu\_obiektu} - Funkcja obliczająca koszt najmu wskazanego obiektu}
 
-|koszt_najmu_obiektu (@obiekt_id INT, @liczba_dni INT)| - Funkcja ta oblicza koszt najmu obiektu wskazanego w parametrze |@obiekt_id| przez liczbę dni określoną w parametrze |@liczba_dni|, zwracana wartość ma typ |DECIMAL(15, 2)| który jest kompatybilny z typem kolumny \texttt{koszt} w tabeli \texttt{najmy}. Funkcja ta została wydzielona w celu uniknięcia duplikacji kodu w funkcji skalarnej \texttt{koszt\_najmu} z listingu \ref{lst:function-koszt_najmu} oraz w funkcji tabelarnej \texttt{opoznieni} z listingu \ref{lst:function-opoznieni} (strona \pageref{lst:function-opoznieni}).
+`koszt_najmu_obiektu (@obiekt_id INT, @liczba_dni INT)` - Funkcja ta oblicza koszt najmu obiektu wskazanego w parametrze `@obiekt_id` przez liczbę dni określoną w parametrze `@liczba_dni`, zwracana wartość ma typ `DECIMAL(15, 2)` który jest kompatybilny z typem kolumny \texttt{koszt} w tabeli \texttt{najmy}. Funkcja ta została wydzielona w celu uniknięcia duplikacji kodu w funkcji skalarnej \texttt{koszt\_najmu} z listingu \ref{lst:function-koszt_najmu} oraz w funkcji tabelarnej \texttt{opoznieni} z listingu \ref{lst:function-opoznieni} (strona \pageref{lst:function-opoznieni}).
 
 \begin{lstlisting}[language=SQL, caption={Skrypt tworzący funkcję skalarną \texttt{koszt\_najmu\_obiektu}}, label={lst:function-koszt_najmu_obiektu}]
 CREATE FUNCTION koszt_najmu_obiektu (@obiekt_id INT, @liczba_dni INT)
@@ -29,7 +29,7 @@ CREATE FUNCTION koszt_najmu_obiektu (@obiekt_id INT, @liczba_dni INT)
 
 \subsubsection{\texttt{koszt\_najmu} - Funkcja obliczająca koszt danego najmu}
 
-|koszt_najmu (@najem_id INT)| - Funkcja ta oblicza koszt konkretnego najmu wskazanego w parametrze |@najem_id|, zwracana wartość ma taki sam typ jak funkcja \texttt{koszt\_najmu\_obiektu} która jest wywoływana - czyli |DECIMAL(15, 2)| który jest kompatybilny z typem kolumny \texttt{koszt} w tabeli \texttt{najmy}. Przykład wykorzystania tej funkcji jest w triggerze z listingu \ref{lst:trigger-wylicz_koszt_najmu} (strona \pageref{lst:trigger-wylicz_koszt_najmu}).
+`koszt_najmu (@najem_id INT)` - Funkcja ta oblicza koszt konkretnego najmu wskazanego w parametrze `@najem_id`, zwracana wartość ma taki sam typ jak funkcja \texttt{koszt\_najmu\_obiektu} która jest wywoływana - czyli `DECIMAL(15, 2)` który jest kompatybilny z typem kolumny \texttt{koszt} w tabeli \texttt{najmy}. Przykład wykorzystania tej funkcji jest w triggerze z listingu \ref{lst:trigger-wylicz_koszt_najmu} (strona \pageref{lst:trigger-wylicz_koszt_najmu}).
 
 \begin{lstlisting}[language=SQL, caption={Skrypt tworzący funkcję skalarną \texttt{koszt\_najmu}}, label={lst:function-koszt_najmu}]
 CREATE FUNCTION koszt_najmu (@najem_id INT)
@@ -62,7 +62,7 @@ CREATE FUNCTION koszt_najmu (@najem_id INT)
 
 \subsubsection{\texttt{adresowka} - Funkcja generująca etykietę adresową dla użytkownika}
 
-|adresowka (@uzytkownik_id INT)| - Funkcja ta generuje zawartość etykiety adresowej dla użytkownika wskazanego w parametrze |@uzytkownik_id|, zwracana wartość ma typ |VARCHAR(333)|\footnote{Rozmiar pola bierze się z sumy długości użytych pól (\texttt{nazwisko} i \texttt{imie} po 75 znaków, \texttt{telefon} 30 znaków,\texttt{adres} 150 znaków) oraz znaków dodanych (jedna spacja i dwa znaki nowej lini - \texttt{CHAR(13)}) - jest to najdłuższy możliwy wynik tej funkcji.}. Przykład wykorzystania tej funkcji jest w funkcji tabelarnej z listingu \ref{lst:function-opoznieni}.
+`adresowka (@uzytkownik_id INT)` - Funkcja ta generuje zawartość etykiety adresowej dla użytkownika wskazanego w parametrze `@uzytkownik_id`, zwracana wartość ma typ `VARCHAR(333)`\footnote{Rozmiar pola bierze się z sumy długości użytych pól (\texttt{nazwisko} i \texttt{imie} po 75 znaków, \texttt{telefon} 30 znaków,\texttt{adres} 150 znaków) oraz znaków dodanych (jedna spacja i dwa znaki nowej lini - \texttt{CHAR(13)}) - jest to najdłuższy możliwy wynik tej funkcji.}. Przykład wykorzystania tej funkcji jest w funkcji tabelarnej z listingu \ref{lst:function-opoznieni}.
 
 \begin{lstlisting}[language=SQL, caption={Skrypt tworzący funkcję skalarną \texttt{adresowka}}, label={lst:function-adresowka}]
 CREATE FUNCTION adresowka (@uzytkownik_id INT)
@@ -81,7 +81,7 @@ CREATE FUNCTION adresowka (@uzytkownik_id INT)
 
 \subsubsection{\texttt{opoznieni} - Funkcja generująca etykiety dla użytkowników którzy coś wynajęli ale jeszcze nie oddali}
 
-|opoznieni (@liczba_dni INT)| - Funkcja ta generuje listę obiektów wraz z najemcami, które zostały wynajęte co najmniej liczbę dni wcześniej określoną parametrem |@liczba_dni|. Funkcja ta zwraca tabelę składającą się z identyfikatora najmu, nazwy wynajętego obiektu, liczby dni od rozpoczęcia najmu, szacunkowego kosztu tego najmu na dzień bieżący oraz etykiety adresowej do najemcy.
+`opoznieni (@liczba_dni INT)` - Funkcja ta generuje listę obiektów wraz z najemcami, które zostały wynajęte co najmniej liczbę dni wcześniej określoną parametrem `@liczba_dni`. Funkcja ta zwraca tabelę składającą się z identyfikatora najmu, nazwy wynajętego obiektu, liczby dni od rozpoczęcia najmu, szacunkowego kosztu tego najmu na dzień bieżący oraz etykiety adresowej do najemcy.
 
 \begin{figure}[h]
 	\centering

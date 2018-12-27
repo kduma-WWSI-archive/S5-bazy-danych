@@ -2,6 +2,518 @@ BEGIN TRY
 
 
 
+PRINT 'Wersja 33: ''Nadanie uprawnien roli administratora i operatora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 33)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE EXECUTE ON utworz_uzytkownika TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE EXECUTE ON utworz_uzytkownika TO operatorzy_systemu;
+        '
+    
+        UPDATE db_status SET version = 32 WHERE version = 33;
+        PRINT 'Wersja 33: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 32';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 33)
+          BEGIN
+            RAISERROR ('Wersja 33: Baza danych jest w za wysokiej wersji (wymagana jest wersja 33) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 33: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 33: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 32: ''Utworzenie procedury skladowanej do tworzenia uzytkownikow'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 32)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP PROCEDURE utworz_uzytkownika;
+        '
+    
+        UPDATE db_status SET version = 31 WHERE version = 32;
+        PRINT 'Wersja 32: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 31';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 32)
+          BEGIN
+            RAISERROR ('Wersja 32: Baza danych jest w za wysokiej wersji (wymagana jest wersja 32) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 32: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 32: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 31: ''Nadanie uprawnien roli uzytkownika systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 31)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON kategorie TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON miasta TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON dzielnice TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON obiekty TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, UPDATE(nazwisko, imie, wiek, adres, telefon, plec) ON uzytkownicy TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE(data_zakonczenia) ON najmy TO uzytkownicy_systemu;
+        '
+    
+        UPDATE db_status SET version = 30 WHERE version = 31;
+        PRINT 'Wersja 31: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 30';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 31)
+          BEGIN
+            RAISERROR ('Wersja 31: Baza danych jest w za wysokiej wersji (wymagana jest wersja 31) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 31: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 31: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 30: ''Utworzenie roli uzytkownika systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 30)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP ROLE uzytkownicy_systemu;
+        '
+    
+        UPDATE db_status SET version = 29 WHERE version = 30;
+        PRINT 'Wersja 30: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 29';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 30)
+          BEGIN
+            RAISERROR ('Wersja 30: Baza danych jest w za wysokiej wersji (wymagana jest wersja 30) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 30: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 30: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 29: ''Przypisanie uzytkownikowi operatora roli operatora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 29)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          EXEC sp_droprolemember ''operatorzy_systemu'', ''operator'';
+        '
+    
+        UPDATE db_status SET version = 28 WHERE version = 29;
+        PRINT 'Wersja 29: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 28';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 29)
+          BEGIN
+            RAISERROR ('Wersja 29: Baza danych jest w za wysokiej wersji (wymagana jest wersja 29) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 29: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 29: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 28: ''Utworzenie uzytkownika operatora'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 28)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP USER operator;
+        '
+    
+        UPDATE db_status SET version = 27 WHERE version = 28;
+        PRINT 'Wersja 28: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 27';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 28)
+          BEGIN
+            RAISERROR ('Wersja 28: Baza danych jest w za wysokiej wersji (wymagana jest wersja 28) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 28: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 28: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 27: ''Nadanie uprawnien roli operatora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 27)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON kategorie TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON miasta TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON dzielnice TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON obiekty TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON uzytkownicy TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE ON najmy TO operatorzy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON lista_najmow TO operatorzy_systemu;
+        '
+    
+        UPDATE db_status SET version = 26 WHERE version = 27;
+        PRINT 'Wersja 27: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 26';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 27)
+          BEGIN
+            RAISERROR ('Wersja 27: Baza danych jest w za wysokiej wersji (wymagana jest wersja 27) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 27: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 27: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 26: ''Utworzenie roli operatora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 26)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP ROLE operatorzy_systemu;
+        '
+    
+        UPDATE db_status SET version = 25 WHERE version = 26;
+        PRINT 'Wersja 26: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 25';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 26)
+          BEGIN
+            RAISERROR ('Wersja 26: Baza danych jest w za wysokiej wersji (wymagana jest wersja 26) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 26: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 26: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 25: ''Przypisanie uzytkownikowi administracyjnemu roli administratora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 25)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          EXEC sp_droprolemember ''admini_systemu'', ''admin'';
+        '
+    
+        UPDATE db_status SET version = 24 WHERE version = 25;
+        PRINT 'Wersja 25: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 24';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 25)
+          BEGIN
+            RAISERROR ('Wersja 25: Baza danych jest w za wysokiej wersji (wymagana jest wersja 25) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 25: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 25: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 24: ''Utworzenie uzytkownika administracyjnego'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 24)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP USER admin;
+        '
+    
+        UPDATE db_status SET version = 23 WHERE version = 24;
+        PRINT 'Wersja 24: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 23';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 24)
+          BEGIN
+            RAISERROR ('Wersja 24: Baza danych jest w za wysokiej wersji (wymagana jest wersja 24) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 24: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 24: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 23: ''Nadanie uprawnien roli administratora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 23)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE, DELETE ON kategorie TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE, DELETE ON miasta TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE, DELETE ON dzielnice TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE, DELETE ON obiekty TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, UPDATE, DELETE ON uzytkownicy TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE ON najmy TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON lista_najmow TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON lista_niepopularnych_obiektow TO admini_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON lista_popularnosci_obiektow TO admini_systemu;
+        '
+    
+        UPDATE db_status SET version = 22 WHERE version = 23;
+        PRINT 'Wersja 23: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 22';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 23)
+          BEGIN
+            RAISERROR ('Wersja 23: Baza danych jest w za wysokiej wersji (wymagana jest wersja 23) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 23: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 23: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 22: ''Utworzenie roli administratora systemu'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 22)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP ROLE admini_systemu;
+        '
+    
+        UPDATE db_status SET version = 21 WHERE version = 22;
+        PRINT 'Wersja 22: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 21';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 22)
+          BEGIN
+            RAISERROR ('Wersja 22: Baza danych jest w za wysokiej wersji (wymagana jest wersja 22) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 22: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 22: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
 PRINT 'Wersja 21: ''Utworzenie funkcji wyswietlajacej spozniajacych sie uzytkownikow'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
