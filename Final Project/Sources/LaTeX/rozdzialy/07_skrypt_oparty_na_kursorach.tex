@@ -1,3 +1,7 @@
-\section{Skrypt oparty na kursorach}
+\section{Generator bilingów (skrypt oparty na kursorach)}
 
-% TODO: Uzupełnić
+Został przygotowany jeden skrypt służący do wygenerowania i wydrukowania bilingu dla każdego użytkownika. Ponieważ plikiem wynikowym jest czysty plik tekstowy, to można od razu go wysłać do wydrukowania na drukarkę igłową. Pomiędzy poszczególnymi bilingami zostały dodane znaczniki \href{https://www.computerhope.com/jargon/f/formfeed.htm}{Form Feed (FF)}, dzięki czemu każdy biling będzie na oddzielnej stronie.
+
+\lstinputlisting[language=SQL, caption=Oparty na kursorach skrypt do generowania bilingów, label={lst:cursors}]{../../skrypt_oparty_na_kursorach.sql}
+
+\lstinputlisting[caption=Wynik uruchomienia skryptu do generowania bilingów, label={lst:cursors-results}]{../Logs/skrypt_oparty_na_kursorach.sql.log}

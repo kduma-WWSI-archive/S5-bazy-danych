@@ -116,6 +116,19 @@ sleep 15s
 	-w 100 \
 	| tee /usr/src/output/test-uzytkownicy.sql.log
 
+
+/opt/mssql-tools/bin/sqlcmd \
+	-S localhost \
+	-U sa \
+	-P "$SA_PASSWORD" \
+	-d projekt \
+	-i /usr/src/data/skrypt_oparty_na_kursorach.sql \
+	-y 30 \
+	-Y 30 \
+	-s \| \
+	-w 2000 \
+	| tee /usr/src/output/skrypt_oparty_na_kursorach.sql.log
+
 #	-e \
 
 #FILES=/usr/src/sql/*.sql
