@@ -8,15 +8,15 @@ Przewidziane zostały 3 role dla użytkowników:
 \end{itemize}
 Do tych ról przypisane zostały uprawnienia zgodnie z tabelą \ref{table:permissions}.
 
-Dodatkowo fabrycznie zostali utworzeni dwaj użytkownicy:
+Dodatkowo fabrycznie zostali utworzeni dwaj użytkownicy (listing \ref{lst:role-admin} i listing \ref{lst:role-operator}):
 \begin{itemize}
 	\item \texttt{admin} z hasłem \texttt{yourStrong(!)Password} przypisany do roli \texttt{admini\_systemu}
 	\item \texttt{operator} z hasłem \texttt{yourStrong(!)Password} przypisany do roli \texttt{operatorzy\_systemu}
 \end{itemize}
 
-Kolejnych użytkowników roli \texttt{uzytkownicy\_systemu}, można tworzyć za pomocą procedury składowanej z listingu \ref{lst:procedura-utworz_uzytkownika-przyklad} - \texttt{utworz\_uzytkownika}.
+Kolejnych użytkowników roli \texttt{uzytkownicy\_systemu}, można tworzyć za pomocą procedury składowanej z listingu \ref{lst:procedura-utworz_uzytkownika-przyklad} - \texttt{utworz\_uzytkownika} (strona \ref{lst:procedura-utworz_uzytkownika-przyklad}).
 
-\begin{table}[t]
+\begin{table}[h]
 	{\renewcommand{\arraystretch}{1.5}
 		\begin{tabu} to \textwidth { |X[2,l]||X[1,c]|X[1,c]|X[1,c]| }
 			\hline
@@ -64,6 +64,76 @@ Kolejnych użytkowników roli \texttt{uzytkownicy\_systemu}, można tworzyć za 
 \stepcounter{footnote} \footnotetext{tylko pola nazwisko, imie, wiek, adres, telefon, plec}
 \stepcounter{footnote} \footnotetext{wybieranie i edycja ograniczone tylko do swoich danych}
 \stepcounter{footnote} \footnotetext{tylko pole data\_zakonczenia}
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący rolę i użytkownika administracyjnego}, label={lst:role-admin}]
+CREATE ROLE admini_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON kategorie TO admini_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON miasta TO admini_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON dzielnice TO admini_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON obiekty TO admini_systemu;
+GO;
+
+GRANT SELECT, UPDATE, DELETE ON uzytkownicy TO admini_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE ON najmy TO admini_systemu;
+GO;
+
+GRANT SELECT ON lista_najmow TO admini_systemu;
+GO;
+
+GRANT SELECT ON lista_niepopularnych_obiektow TO admini_systemu;
+GO;
+
+GRANT SELECT ON lista_popularnosci_obiektow TO admini_systemu;
+GO;
+
+CREATE USER admin WITH PASSWORD ='yourStrong(!)Password';
+GO;
+
+EXEC sp_addrolemember 'admini_systemu', 'admin';
+GO;
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący rolę i użytkownika operatorskiego}, label={lst:role-operator}]
+CREATE ROLE operatorzy_systemu;
+GO;
+
+GRANT SELECT ON kategorie TO operatorzy_systemu;
+GO;
+
+GRANT SELECT ON miasta TO operatorzy_systemu;
+GO;
+
+GRANT SELECT ON dzielnice TO operatorzy_systemu;
+GO;
+
+GRANT SELECT ON obiekty TO operatorzy_systemu;
+GO;
+
+GRANT SELECT ON uzytkownicy TO operatorzy_systemu;
+GO;
+
+GRANT SELECT, INSERT, UPDATE ON najmy TO operatorzy_systemu;
+GO;
+
+GRANT SELECT ON lista_najmow TO operatorzy_systemu;
+GO;
+
+CREATE USER operator WITH PASSWORD ='yourStrong(!)Password';
+GO;
+
+EXEC sp_addrolemember 'operatorzy_systemu', 'operator';
+GO;
+\end{lstlisting}
 
 \subsubsection{Ograniczenie uprawnień na poziomie wiersza}
 
@@ -121,3 +191,16 @@ ALTER SECURITY POLICY fn_security_najmy WITH (state = on);
 GO;
 \end{lstlisting}
 
+\subsubsection{Test uprawnień użytkowników}
+
+W pierwszy teście sprawdzimy czy do widoku \texttt{lista\_najmow}, uprawnienia mają tylko użytkownicy grup \texttt{operatorzy\_systemu} oraz \texttt{admini\_systemu}.
+
+\lstinputlisting[language=SQL, caption={Skrypt testujący uprawnienia do wyświetlania widoku \texttt{lista\_najmow}}, label={lst:test-lista_najmow}]{../DockerMachine/MSSQLServer/scripts/test-lista_najmow.sql}
+
+\lstinputlisting[caption={Wynik uruchomienia skryptu testującego uprawnienia do wyświetlania widoku \texttt{lista\_najmow}}, label={lst:test-lista_najmow-results}]{../Logs/test-lista_najmow.sql.log}
+
+W drugim teście sprawdzimy czy \texttt{uzytkownicy\_systemu} widzą tylko swoje dane w tabeli \texttt{uzytkownicy}, a \texttt{operatorzy\_systemu} oraz \texttt{admini\_systemu} widzą wszystkich 4 użytkowników.
+
+\lstinputlisting[language=SQL, caption={Skrypt testujący uprawnienia do wyświetlania tabeli \texttt{uzytkownicy}}, label={lst:test-uzytkownicy}]{../DockerMachine/MSSQLServer/scripts/test-uzytkownicy.sql}
+
+\lstinputlisting[caption={Wynik uruchomienia skryptu testującego uprawnienia do wyświetlania tabeli \texttt{uzytkownicy}}, label={lst:test-uzytkownicy-results}]{../Logs/test-uzytkownicy.sql.log}

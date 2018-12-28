@@ -18,6 +18,8 @@ W momencie wykonywania skryptu, podaje on liczbę dodanych wierszy do każdej z 
 
 \lstinputlisting[caption=Wynik uruchomienia całego skryptu tworzącego dane testowe w trybie wsadowym, label={lst:create-data}]{../Logs/skrypt_tworzacy_dane_testowe.sql-second-run.log}
 
+\newpage
+
 \subsection{Skrypt usuwający dane testowe}
 
 Ponieważ nasze tabele posiadają kolumny autonumerowanie (typu \texttt{IDENTITY}), to nie możemy skasować danych przy pomocy funkcji \texttt{TRUNCATE}. Aby uzyskać podobny wynik (opróżnienie tabeli) wykorzystuję dyrektywę \texttt{DBCC CHECKIDENT(<tabela>, RESEED, 0)} która powoduje zresetowanie autonumerowania w tabeli.
