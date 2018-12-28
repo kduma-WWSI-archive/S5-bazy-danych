@@ -82,7 +82,7 @@ CREATE UNIQUE INDEX najemcy_ui
    ON najmy (uzytkownik_id, obiekt_id, data_rozpoczecia);
 \end{lstlisting}
 
-\subsection{Utworzenie relacji pomiędzy użytkownikami a najmami}
+\subsubsection{Utworzenie relacji pomiędzy użytkownikami a najmami}
 
 Wszystkie tabele zostały połączone relacją (`CONSTRAINT`) typu klucz obcy (`FOREIGN KEY`) tak jak na przykładzie z listingu \ref{lst:table-najmy-foreign}.
 
@@ -98,5 +98,4 @@ ALTER TABLE najmy
   ADD CONSTRAINT najmy_obiekty_fk
   FOREIGN KEY (obiekt_id)
   REFERENCES obiekty(id);
-GO;
 \end{lstlisting}

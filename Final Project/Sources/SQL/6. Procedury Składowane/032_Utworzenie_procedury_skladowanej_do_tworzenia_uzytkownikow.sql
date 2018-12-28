@@ -31,9 +31,6 @@ CREATE PROCEDURE utworz_uzytkownika
       RETURN 1;
 GO;
 
-
-GO;
-
 ---~~~
 
 DROP PROCEDURE utworz_uzytkownika;

@@ -2,17 +2,157 @@ BEGIN TRY
 
 
 
-PRINT 'Wersja 33: ''Nadanie uprawnien roli administratora i operatora systemu'''
+PRINT 'Wersja 36: ''Utworzenie triggeru aktualizujacego stan obiekty'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 36)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          DROP TRIGGER aktualizuj_stan_obiektu;
+        '
+    
+        UPDATE db_status SET version = 35 WHERE version = 36;
+        PRINT 'Wersja 36: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 35';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 36)
+          BEGIN
+            RAISERROR ('Wersja 36: Baza danych jest w za wysokiej wersji (wymagana jest wersja 36) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 36: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 36: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 35: ''Nadanie uprawnien wiersza w tabeli najmy'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 35)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          ALTER SECURITY POLICY fn_security_najmy WITH (state = off);
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          DROP SECURITY POLICY fn_security_najmy;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          DROP FUNCTION fn_securitypredicate_najmy;
+        '
+    
+        UPDATE db_status SET version = 34 WHERE version = 35;
+        PRINT 'Wersja 35: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 34';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 35)
+          BEGIN
+            RAISERROR ('Wersja 35: Baza danych jest w za wysokiej wersji (wymagana jest wersja 35) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 35: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 35: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 34: ''Nadanie uprawnien wiersza w tabeli uzytkownicy'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 34)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          ALTER SECURITY POLICY fn_security_uzytkownicy WITH (state = off);
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          DROP SECURITY POLICY fn_security_uzytkownicy;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          DROP FUNCTION fn_securitypredicate_uzytkownicy;
+        '
+    
+        UPDATE db_status SET version = 33 WHERE version = 34;
+        PRINT 'Wersja 34: Migracja zostala odinstalowana pomyslnie - teraz baza jest w wersji 33';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version > 34)
+          BEGIN
+            RAISERROR ('Wersja 34: Baza danych jest w za wysokiej wersji (wymagana jest wersja 34) aby odinstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 34: Migracja nie była wczesniej zainstalowana lub zostala juz odinstalowana';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 34: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 33: ''Nadanie uprawnien roli uzytkownika systemu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 33)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          REVOKE EXECUTE ON utworz_uzytkownika TO admini_systemu;
+          REVOKE SELECT ON kategorie TO uzytkownicy_systemu;
         '
 
         EXEC dbo.sp_executesql @statement = N'
-          REVOKE EXECUTE ON utworz_uzytkownika TO operatorzy_systemu;
+          REVOKE SELECT ON miasta TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON dzielnice TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT ON obiekty TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, UPDATE(nazwisko, imie, wiek, adres, telefon, plec) ON uzytkownicy TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          REVOKE SELECT, INSERT, UPDATE(data_zakonczenia) ON najmy TO uzytkownicy_systemu;
         '
     
         UPDATE db_status SET version = 32 WHERE version = 33;
@@ -78,33 +218,17 @@ ELSE
 
 
 
-PRINT 'Wersja 31: ''Nadanie uprawnien roli uzytkownika systemu'''
+PRINT 'Wersja 31: ''Utworzenie procedury skladowanej wynajmowania obiektow'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 31)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT ON kategorie TO uzytkownicy_systemu;
+          REVOKE EXECUTE ON wynajmij_obiekt TO uzytkownicy_systemu;
         '
 
         EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT ON miasta TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT ON dzielnice TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT ON obiekty TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT, UPDATE(nazwisko, imie, wiek, adres, telefon, plec) ON uzytkownicy TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          REVOKE SELECT, INSERT, UPDATE(data_zakonczenia) ON najmy TO uzytkownicy_systemu;
+          DROP PROCEDURE wynajmij_obiekt;
         '
     
         UPDATE db_status SET version = 30 WHERE version = 31;

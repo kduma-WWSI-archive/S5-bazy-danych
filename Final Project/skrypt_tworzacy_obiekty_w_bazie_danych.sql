@@ -1303,33 +1303,44 @@ ELSE
 
 
 
-PRINT 'Wersja 31: ''Nadanie uprawnien roli uzytkownika systemu'''
+PRINT 'Wersja 31: ''Utworzenie procedury skladowanej wynajmowania obiektow'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 30)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT ON kategorie TO uzytkownicy_systemu;
+          CREATE PROCEDURE wynajmij_obiekt
+            @obiekt_id INT
+            WITH EXECUTE AS OWNER
+            AS
+              IF NOT EXISTS(SELECT * FROM obiekty WHERE id = @obiekt_id)
+                RETURN 2;
+          
+              IF EXISTS(SELECT * FROM obiekty WHERE id = @obiekt_id AND obecnie_wynajete = ''t'')
+                RETURN 3;
+          
+              EXECUTE AS CALLER;
+              DECLARE @login VARCHAR(75);
+              SELECT @login = CURRENT_USER;
+              REVERT;
+          
+              BEGIN TRANSACTION;
+              INSERT INTO najmy (uzytkownik_id, obiekt_id, data_rozpoczecia, data_zakonczenia, koszt)
+                VALUES ((SELECT u.id FROM dbo.uzytkownicy u WHERE u.login COLLATE SQL_Latin1_General_CP1_CS_AS = @login COLLATE SQL_Latin1_General_CP1_CS_AS), @obiekt_id, DEFAULT, NULL, NULL);
+          
+              IF @@ERROR<>0
+                GOTO BLAD;
+          
+              COMMIT TRANSACTION;
+              RETURN 0;
+          
+              BLAD:
+                ROLLBACK TRANSACTION;
+                RETURN 1;
         '
 
         EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT ON miasta TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT ON dzielnice TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT ON obiekty TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT, UPDATE(nazwisko, imie, wiek, adres, telefon, plec) ON uzytkownicy TO uzytkownicy_systemu;
-        '
-
-        EXEC dbo.sp_executesql @statement = N'
-          GRANT SELECT, INSERT, UPDATE(data_zakonczenia) ON najmy TO uzytkownicy_systemu;
+          GRANT EXECUTE ON wynajmij_obiekt TO uzytkownicy_systemu;
         '
     
         UPDATE db_status SET version = 31 WHERE version = 30;
@@ -1425,17 +1436,33 @@ ELSE
 
 
 
-PRINT 'Wersja 33: ''Nadanie uprawnien roli administratora i operatora systemu'''
+PRINT 'Wersja 33: ''Nadanie uprawnien roli uzytkownika systemu'''
 IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
   BEGIN
     IF EXISTS(SELECT * FROM db_status WHERE version = 32)
       BEGIN
         EXEC dbo.sp_executesql @statement = N'
-          GRANT EXECUTE ON utworz_uzytkownika TO admini_systemu;
+          GRANT SELECT ON kategorie TO uzytkownicy_systemu;
         '
 
         EXEC dbo.sp_executesql @statement = N'
-          GRANT EXECUTE ON utworz_uzytkownika TO operatorzy_systemu;
+          GRANT SELECT ON miasta TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          GRANT SELECT ON dzielnice TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          GRANT SELECT ON obiekty TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          GRANT SELECT, UPDATE(nazwisko, imie, wiek, adres, telefon, plec) ON uzytkownicy TO uzytkownicy_systemu;
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          GRANT SELECT, INSERT, UPDATE(data_zakonczenia) ON najmy TO uzytkownicy_systemu;
         '
     
         UPDATE db_status SET version = 33 WHERE version = 32;
@@ -1456,6 +1483,168 @@ IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
 ELSE
   BEGIN
     RAISERROR ('Wersja 33: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 34: ''Nadanie uprawnien wiersza w tabeli uzytkownicy'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 33)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE FUNCTION fn_securitypredicate_uzytkownicy (@login_field SYSNAME)
+            RETURNS TABLE
+            WITH SCHEMABINDING
+            AS
+              RETURN SELECT 1 AS fn_securitypredicate_uzytkownicy_result
+                FROM dbo.uzytkownicy
+                WHERE (
+                  @login_field = user_name()
+                  OR IS_ROLEMEMBER(''admini_systemu'', user_name()) = 1
+                  OR IS_ROLEMEMBER(''operatorzy_systemu'', user_name()) = 1
+                  OR user_name() = ''dbo''
+                )
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE SECURITY POLICY fn_security_uzytkownicy
+            ADD FILTER PREDICATE
+            dbo.fn_securitypredicate_uzytkownicy(login)
+            ON dbo.uzytkownicy
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          ALTER SECURITY POLICY fn_security_uzytkownicy WITH (state = on);
+        '
+    
+        UPDATE db_status SET version = 34 WHERE version = 33;
+        PRINT 'Wersja 34: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 34';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 33)
+          BEGIN
+            RAISERROR ('Wersja 34: Baza danych jest w za niskiej wersji (wymagana jest wersja 33) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 34: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 34: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 35: ''Nadanie uprawnien wiersza w tabeli najmy'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 34)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE FUNCTION fn_securitypredicate_najmy (@login_field SYSNAME)
+            RETURNS TABLE
+            WITH SCHEMABINDING
+            AS
+              RETURN SELECT 1 AS fn_securitypredicate_najmy_result
+                FROM dbo.najmy n
+                WHERE (
+                  @login_field = (SELECT u.id FROM dbo.uzytkownicy u WHERE u.login COLLATE SQL_Latin1_General_CP1_CS_AS = CURRENT_USER COLLATE SQL_Latin1_General_CP1_CS_AS)
+                  OR IS_ROLEMEMBER(''admini_systemu'', user_name()) = 1
+                  OR IS_ROLEMEMBER(''operatorzy_systemu'', user_name()) = 1
+                  OR user_name() = ''dbo''
+                )
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE SECURITY POLICY fn_security_najmy
+            ADD FILTER PREDICATE
+            dbo.fn_securitypredicate_najmy(uzytkownik_id)
+            ON dbo.najmy
+        '
+
+        EXEC dbo.sp_executesql @statement = N'
+          ALTER SECURITY POLICY fn_security_najmy WITH (state = on);
+        '
+    
+        UPDATE db_status SET version = 35 WHERE version = 34;
+        PRINT 'Wersja 35: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 35';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 34)
+          BEGIN
+            RAISERROR ('Wersja 35: Baza danych jest w za niskiej wersji (wymagana jest wersja 34) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 35: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 35: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
+  END
+
+
+
+
+
+
+
+
+PRINT 'Wersja 36: ''Utworzenie triggeru aktualizujacego stan obiekty'''
+IF EXISTS(SELECT * FROM sys.tables WHERE name = N'db_status')
+  BEGIN
+    IF EXISTS(SELECT * FROM db_status WHERE version = 35)
+      BEGIN
+        EXEC dbo.sp_executesql @statement = N'
+          CREATE TRIGGER aktualizuj_stan_obiektu
+            ON najmy
+            AFTER INSERT, UPDATE
+            AS
+            BEGIN
+              UPDATE obiekty
+                SET obecnie_wynajete = IIF(i.data_zakonczenia IS NULL, ''T'', ''N'')
+                FROM obiekty o
+                JOIN najmy n ON o.id = n.obiekt_id
+                JOIN inserted i ON n.id = i.id
+            END
+        '
+    
+        UPDATE db_status SET version = 36 WHERE version = 35;
+        PRINT 'Wersja 36: Migracja zostala zainstalowana pomyslnie - teraz baza jest w wersji 36';
+      END
+    ELSE
+      BEGIN
+        IF EXISTS(SELECT * FROM db_status WHERE version < 35)
+          BEGIN
+            RAISERROR ('Wersja 36: Baza danych jest w za niskiej wersji (wymagana jest wersja 35) aby zainstalowac migracje', 11, 2);
+          END
+        ELSE
+          BEGIN
+            PRINT 'Wersja 36: Migracja już zostala zainstalowana wczesniej';
+          END
+      END
+  END
+ELSE
+  BEGIN
+    RAISERROR ('Wersja 36: Nie znaleziono tabeli wersjonowania bazy danych', 11, 1);
   END
 
 

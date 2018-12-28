@@ -3,6 +3,7 @@
 Zostały stworzone następujące triggery:
 \begin{itemize}
 	\item \href{run:Sources/SQL/5. Triggery/019_Utworzenie_triggeru_aktualizujacego_koszt_najmu.sql}{\texttt{wylicz\_koszt\_najmu} - Trigger zapisujący koszt najmu}
+	\item \href{run:Sources/SQL/5. Triggery/036_Utworzenie_triggeru_aktualizujacego_stan_obiekty.sql}{\texttt{aktualizuj\_stan\_obiektu} - Trigger zapisujący koszt najmu}
 \end{itemize}
 
 \subsubsection{\texttt{wylicz\_koszt\_najmu} - Trigger zapisujący koszt najmu}
@@ -20,5 +21,24 @@ CREATE TRIGGER wylicz_koszt_najmu
       FROM najmy n
       JOIN inserted i ON n.id = i.id
       WHERE UPDATE (data_zakonczenia) OR NOT EXISTS(SELECT 1 FROM DELETED)
+  END
+\end{lstlisting}
+
+
+\subsubsection{\texttt{aktualizuj\_stan\_obiektu} - Trigger zapisujący koszt najmu}
+
+% TODO - Opisać
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący trigger \texttt{aktualizuj\_stan\_obiektu}}, label={lst:trigger-aktualizuj_stan_obiektu}]
+CREATE TRIGGER aktualizuj_stan_obiektu
+  ON najmy
+  AFTER INSERT, UPDATE
+  AS
+  BEGIN
+    UPDATE obiekty
+      SET obecnie_wynajete = IIF(i.data_zakonczenia IS NULL, 'T', 'N')
+      FROM obiekty o
+      JOIN najmy n ON o.id = n.obiekt_id
+      JOIN inserted i ON n.id = i.id
   END
 \end{lstlisting}

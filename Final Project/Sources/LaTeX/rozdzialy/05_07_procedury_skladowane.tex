@@ -3,6 +3,7 @@
 Zostały stworzone następujące procedury:
 \begin{itemize}
 	\item \href{run:Sources/SQL/6. Procedury Składowamne/032_Utworzenie_procedury_skladowanej_do_tworzenia_uzytkownikow.sql}{\texttt{utworz\_uzytkownika} - Procedura do tworzenia użytkowników}
+	\item \href{run:Sources/SQL/6. Procedury Składowamne/031_Utworzenie_procedury_skladowanej_wynajmowania_obiektow.sql}{\texttt{wynajmij\_obiekt} - Procedura do wynajmowania obiektów przez użytkowników}
 \end{itemize}
 
 \subsubsection{\texttt{utworz\_uzytkownika} - Procedura do tworzenia użytkowników}
@@ -80,5 +81,59 @@ EXEC @wynik = utworz_uzytkownika
   @telefon = '+48 625 548 874',
   @plec = 'M',
   @haslo = 'yourStrong(!)Password';
+SELECT 'Zwrócony Wynik' = @wynik;
+\end{lstlisting}
+
+\subsubsection{\texttt{wynajmij\_obiekt} - Procedura do wynajmowania obiektów przez użytkowników}
+
+Procedura ta służy do wynajmowania (tworzenia odpowiedniego wpisu w tabeli \texttt{najmy}) obiektów przez użytkowników.
+
+Procedura przyjmuje 1 parametr:
+\begin{itemize}
+	\item `@obiekt_id INT`
+\end{itemize}
+
+Procedura zwraca następujące wartości:
+\begin{itemize}
+	\item 0 - Użytkownik dodany pomyślnie
+	\item 1 - Wystąpił nieznany błąd
+	\item 2 - Obiekt o podanym identyfikatorze nie istnieje
+	\item 3 - Obiekt o podanym identyfikatorze jest obecnie zajęty
+\end{itemize}
+
+\begin{lstlisting}[language=SQL, caption={Skrypt tworzący procedurę składowaną \texttt{wynajmij\_obiekt}}, label={lst:procedura-wynajmij_obiekt}]
+CREATE PROCEDURE wynajmij_obiekt
+  @obiekt_id INT
+  WITH EXECUTE AS OWNER
+  AS
+    IF NOT EXISTS(SELECT * FROM obiekty WHERE id = @obiekt_id)
+      RETURN 2;
+
+    IF EXISTS(SELECT * FROM obiekty WHERE id = @obiekt_id AND obecnie_wynajete = 't')
+      RETURN 3;
+
+    EXECUTE AS CALLER;
+    DECLARE @login VARCHAR(75);
+    SELECT @login = CURRENT_USER;
+    REVERT;
+
+    BEGIN TRANSACTION;
+    INSERT INTO najmy (uzytkownik_id, obiekt_id, data_rozpoczecia, data_zakonczenia, koszt)
+      VALUES ((SELECT u.id FROM dbo.uzytkownicy u WHERE u.login COLLATE SQL_Latin1_General_CP1_CS_AS = @login COLLATE SQL_Latin1_General_CP1_CS_AS), @obiekt_id, DEFAULT, NULL, NULL);
+
+    IF @@ERROR<>0
+      GOTO BLAD;
+
+    COMMIT TRANSACTION;
+    RETURN 0;
+
+    BLAD:
+      ROLLBACK TRANSACTION;
+      RETURN 1;
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL, caption={Przykład użycia procedury \texttt{wynajmij\_obiekt}}, label={lst:procedura-wynajmij_obiekt-przyklad}]
+DECLARE @wynik INT;
+EXEC @wynik = wynajmij_obiekt @obiekt_id = 17;
 SELECT 'Zwrócony Wynik' = @wynik;
 \end{lstlisting}
